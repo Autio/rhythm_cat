@@ -61,7 +61,6 @@ public class GameManager : MonoBehaviour
         Debug.Log("Note hit");
         HealthUp();
 
-        currentScore += scorePerNote * multiplier;
         try
         {
             scoreText.GetComponent<TMP_Text>().text = currentScore.ToString();
@@ -85,18 +84,25 @@ public class GameManager : MonoBehaviour
 
     public void NormalHit()
     {
+       currentScore += scorePerNormalHit * multiplier;
+        Debug.Log("Normal hit!");
 
     }
 
     public void GoodHit()
     {
+        currentScore += scorePerGoodHit * multiplier;
+        Debug.Log("Good hit!");
 
     }
 
     public void PerfectHit()
     {
+        currentScore += scorePerPerfectHit * multiplier;
+        Debug.Log("Perfect hit!");
 
     }
+
 
     public void NoteMissed()
     {

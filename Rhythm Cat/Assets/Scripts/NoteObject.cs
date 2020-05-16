@@ -20,8 +20,24 @@ public class NoteObject : MonoBehaviour
         {
             if(canBePressed && !hit)
             {
-                GameManager.instance.NoteHit();
+                // Hit quality on the basis of the distance from 0
+                if(Mathf.Abs(transform.position.y) > 0.25f)
+                {
+                    GameManager.instance.NormalHit();
+                } else if (Mathf.Abs(transform.position.y) > .05f)
+                    {
+                    GameManager.instance.GoodHit();
+
+
+                } else
+                {
+                    GameManager.instance.PerfectHit();
+                }
                 hit = true;
+
+                // Make the note invisible
+                GetComponent<SpriteRenderer>().enabled = false;
+
             }
         }
     }
