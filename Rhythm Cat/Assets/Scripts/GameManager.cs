@@ -85,14 +85,15 @@ public class GameManager : MonoBehaviour
     public void NormalHit()
     {
        currentScore += scorePerNormalHit * multiplier;
-        Debug.Log("Normal hit!");
-
+       Debug.Log("Normal hit!");
+       NoteHit();
     }
 
     public void GoodHit()
     {
         currentScore += scorePerGoodHit * multiplier;
         Debug.Log("Good hit!");
+        NoteHit();
 
     }
 
@@ -100,6 +101,7 @@ public class GameManager : MonoBehaviour
     {
         currentScore += scorePerPerfectHit * multiplier;
         Debug.Log("Perfect hit!");
+        NoteHit();
 
     }
 

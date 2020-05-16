@@ -45,6 +45,9 @@ TagManager:
   - name: Arrows
     uniqueID: 3169350525
     locked: 0
+  - name: Paws
+    uniqueID: 144795147
+    locked: 0
   - name: PopupTexts
     uniqueID: 1288559699
     locked: 0
