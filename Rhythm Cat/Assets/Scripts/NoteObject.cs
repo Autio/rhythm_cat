@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting;
 using UnityEngine;
 
 public class NoteObject : MonoBehaviour
@@ -7,6 +8,10 @@ public class NoteObject : MonoBehaviour
     public bool canBePressed;
     public bool hit = false;
     public KeyCode keyToPress;
+    public enum noteTypes { blue, red, yellow, white };
+    public noteTypes thisNoteType = noteTypes.blue;
+
+
 
     public GameObject perfectText;
     public GameObject goodText;
@@ -44,9 +49,13 @@ public class NoteObject : MonoBehaviour
                 // Make the note invisible
                 GetComponent<SpriteRenderer>().enabled = false;
 
+                // play the effect on the button
+                GameManager.instance.ActivateNoteHitParticles(thisNoteType);
             }
         }
     }
+
+
 
     private void OnTriggerEnter2D(Collider2D other)
     {

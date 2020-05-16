@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     public GameObject sequenceText;
     public GameObject healthBar;
 
+    public GameObject[] buttonHitParticleEffects;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -152,5 +154,26 @@ public class GameManager : MonoBehaviour
 
         healthBar.GetComponent<Slider>().value = (float)health/ (float)maxHealth;
     }
+    public void ActivateNoteHitParticles(NoteObject.noteTypes n)
+    {
+        if(n == NoteObject.noteTypes.blue)
+        {
+            buttonHitParticleEffects[0].GetComponent<ParticleSystem>().Play();
+        }
+        if (n == NoteObject.noteTypes.red)
+        {
+            buttonHitParticleEffects[1].GetComponent<ParticleSystem>().Play();
 
+        }
+        if (n == NoteObject.noteTypes.yellow)
+        {
+            buttonHitParticleEffects[2].GetComponent<ParticleSystem>().Play();
+
+        }
+        if (n == NoteObject.noteTypes.white)
+        {
+            buttonHitParticleEffects[3].GetComponent<ParticleSystem>().Play();
+
+        }
+    }
 }

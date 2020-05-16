@@ -7,7 +7,7 @@ using DG.Tweening;
 public class PopupText : MonoBehaviour
 {
     float speed = 1f;
-    float lifeTimer = 1.2f;
+    float lifeTimer = 1f;
     // Start is called before the first frame update
     void Start()
     {
