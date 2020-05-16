@@ -24308,7 +24308,7 @@ SpriteRenderer:
   m_SortingLayerID: 144795147
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c3c13b1f8baa5dd4a86d3dc186668178, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d1755b40fd102eb49af843961d72ddea, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -24346,8 +24346,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aadeb848224da04286e5c32a655b493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultImage: {fileID: 21300000, guid: c3c13b1f8baa5dd4a86d3dc186668178, type: 3}
-  pressedImage: {fileID: 21300000, guid: 2d10ec486261df445b73774ff82f1b69, type: 3}
+  defaultImage: {fileID: 21300000, guid: d1755b40fd102eb49af843961d72ddea, type: 3}
+  pressedImage: {fileID: 21300000, guid: 1606c677d02556c42a3c5443c9f2ae6a, type: 3}
   keyToPress: 102
 --- !u!50 &1954822629
 Rigidbody2D:
