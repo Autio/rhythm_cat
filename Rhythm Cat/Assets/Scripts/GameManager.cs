@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject scoreText;
     public GameObject multiplierText;
+    public GameObject sequenceText;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +54,8 @@ public class GameManager : MonoBehaviour
         {
             scoreText.GetComponent<TMP_Text>().text = currentScore.ToString();
             sequence++;
+            sequenceText.GetComponent<TMP_Text>().text = sequence.ToString();
+
 
             // Check if it is time to bump up the multiplier
             if (CheckMultiplier())
@@ -77,7 +80,7 @@ public class GameManager : MonoBehaviour
 
     bool CheckMultiplier()
     {
-        if(multiplier % multiplierThreshold == 0)
+        if(sequence % multiplierThreshold == 0)
         {
             return true;
         }

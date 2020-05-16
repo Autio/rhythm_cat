@@ -783,7 +783,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5365,6 +5365,7 @@ MonoBehaviour:
   multiplierThreshold: 3
   scoreText: {fileID: 94989126}
   multiplierText: {fileID: 1597341399}
+  sequenceText: {fileID: 270411648}
 --- !u!1 &1903861621
 GameObject:
   m_ObjectHideFlags: 0
