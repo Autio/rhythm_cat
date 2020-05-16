@@ -17,10 +17,14 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public int currentScore;
-    public int scorePerNote = 100;
+    public int scorePerNormalHit = 80;
+    public int scorePerGoodHit = 100;
+    public int scorePerPerfectHit = 120;
     public int sequence = 0; // Sequence of correctly hit notes
     public int multiplier = 1;
     public int multiplierThreshold = 10; // How many hits do you need to get in sequence before the multiplier is bumped up
+    // Do we want an array of thresholds?
+    public int[] multiplierThresholds = { 4, 8, 16, 32, 64 };
 
     public int health = 40;
     private int maxHealth;
@@ -77,6 +81,21 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Score text couldn't be changed.");
         }
+    }
+
+    public void NormalHit()
+    {
+
+    }
+
+    public void GoodHit()
+    {
+
+    }
+
+    public void PerfectHit()
+    {
+
     }
 
     public void NoteMissed()
