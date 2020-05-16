@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Note hit");
 
-        currentScore += scorePerNote;
+        currentScore += scorePerNote * multiplier;
         try
         {
             scoreText.GetComponent<TMP_Text>().text = currentScore.ToString();
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
             if (CheckMultiplier())
             {
                 multiplier++;
-                multiplierText.GetComponent<TMP_Text>().text = multiplier.ToString();
+                multiplierText.GetComponent<TMP_Text>().text = multiplier.ToString() +"X";
             }
 
         }
