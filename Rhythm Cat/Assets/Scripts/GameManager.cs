@@ -9,8 +9,13 @@ public class GameManager : MonoBehaviour
 {
 
     public AudioSource music;
+    public GameObject gameScene;
+    public GameObject startCanvas; 
+    public GameObject endCanvas;
 
     public bool startPlaying;
+    bool levelEnd = false;
+    bool startScreen = true;
 
     public BeatScroller bs;
 
@@ -34,11 +39,29 @@ public class GameManager : MonoBehaviour
     public GameObject sequenceText;
     public GameObject healthBar;
 
+    public GameObject performanceText;
+    public GameObject finalScoreText;
+    public GameObject notesHitText;
+
+
     public GameObject[] buttonHitParticleEffects;
+
+    int notesHit;
+    int notesMissed;
+    int totalNotes; // How many notes on the scene
 
     // Start is called before the first frame update
     void Start()
     {
+        GameObject[] notes = GameObject.FindGameObjectsWithTag("Note");
+        totalNotes = notes.Length;
+        Debug.Log("Total notes: " + totalNotes.ToString());
+
+
+        gameScene.SetActive(false);
+        startCanvas.SetActive(true);
+        endCanvas.SetActive(false);
+
         instance = this;
         maxHealth = health;
     }
@@ -46,7 +69,17 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!startPlaying)
+        if(startScreen)
+        {
+            if (Input.anyKeyDown)
+            {
+                startScreen = false;
+                // enable main game and hide the start screen
+                startCanvas.SetActive(false);
+                gameScene.SetActive(true);
+
+            }
+        } else if (!startPlaying)
         {
             if(Input.anyKeyDown)
             {
@@ -55,13 +88,22 @@ public class GameManager : MonoBehaviour
 
                 music.Play();
             }
+        } else if (levelEnd)
+        {
+            if(Input.anyKeyDown)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+            
         }
+
     }
 
     public void NoteHit()
     {
         Debug.Log("Note hit");
         HealthUp();
+        notesHit++;
 
         try
         {
@@ -114,6 +156,7 @@ public class GameManager : MonoBehaviour
         HealthDown();
         // Reset sequence if you miss a note
         sequence = 0;
+        notesMissed++;
 
     }
 
@@ -124,7 +167,7 @@ public class GameManager : MonoBehaviour
         if (health <= 0)
         {
             // Level lost
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            EndLevel();
 
         }
     }
@@ -175,5 +218,42 @@ public class GameManager : MonoBehaviour
             buttonHitParticleEffects[3].GetComponent<ParticleSystem>().Play();
 
         }
+    }
+
+    public void EndLevel()
+    {
+        music.Stop();
+        levelEnd = true;
+        gameScene.SetActive(false);
+        startCanvas.SetActive(false);
+        endCanvas.SetActive(true);
+
+        performanceText.GetComponent<TMP_Text>().text = Classification((float)notesHit / (float)totalNotes);
+        finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
+        notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
+
+    }
+
+    string Classification(float percentage)
+    {
+        if (percentage > .9)
+        {
+            return "Purrfect!";
+        } 
+        if (percentage > .8)
+        {
+            return "Clawsome!";
+        } 
+        if (percentage > .7)
+        {
+            return "Pawsitively great!";
+            
+        }
+        if (percentage > .6)
+        {
+            return "Feline fine";
+        }
+
+        return "MeOWWWW!";
     }
 }
