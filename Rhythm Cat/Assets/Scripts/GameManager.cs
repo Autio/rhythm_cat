@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,10 +13,12 @@ public class GameManager : MonoBehaviour
     public GameObject gameScene;
     public GameObject startCanvas; 
     public GameObject endCanvas;
+    public GameObject curtain;
 
     public bool startPlaying;
     bool levelEnd = false;
     bool startScreen = true;
+    bool transition = false;
 
     public BeatScroller bs;
 
@@ -69,12 +72,20 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!transition)
+        {
+
         if(startScreen)
         {
             if (Input.anyKeyDown)
             {
                 startScreen = false;
                 // enable main game and hide the start screen
+                // Start moving the curtains to the right 
+                Sequence seq = DOTween.Sequence();
+                seq.Append(curtain.GetComponent<Transform>().DOMoveX(-12.64f, 2f));
+                transition = true;
+                StartCoroutine(DrawCurtain());
                 startCanvas.SetActive(false);
                 gameScene.SetActive(true);
 
@@ -95,6 +106,8 @@ public class GameManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
             
+        }
+
         }
 
     }
@@ -149,7 +162,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-
     public void NoteMissed()
     {
         Debug.Log("Note missed");
@@ -194,9 +206,9 @@ public class GameManager : MonoBehaviour
 
     void UpdateHealthBar()
     {
-
         healthBar.GetComponent<Slider>().value = (float)health/ (float)maxHealth;
     }
+
     public void ActivateNoteHitParticles(NoteObject.noteTypes n)
     {
         if(n == NoteObject.noteTypes.blue)
@@ -224,6 +236,13 @@ public class GameManager : MonoBehaviour
     {
         music.Stop();
         levelEnd = true;
+
+        // Start moving the curtains to the right
+        Sequence seq = DOTween.Sequence();
+        seq.Append(curtain.GetComponent<Transform>().DOMoveX(4, 2f));
+        transition = true;
+        StartCoroutine(CurtainCall());
+
         gameScene.SetActive(false);
         startCanvas.SetActive(false);
         endCanvas.SetActive(true);
@@ -231,6 +250,23 @@ public class GameManager : MonoBehaviour
         performanceText.GetComponent<TMP_Text>().text = Classification((float)notesHit / (float)totalNotes);
         finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
         notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
+
+    }
+
+    private IEnumerator DrawCurtain()
+    {
+        yield return new WaitForSeconds(1.5f);
+        transition = false;
+
+    }
+
+    private IEnumerator CurtainCall()
+    {
+
+        yield return new WaitForSeconds(1.5f);
+        GameObject.Find("TopHatParticles").GetComponent<ParticleSystem>().Play();
+        yield return new WaitForSeconds(2.5f);
+        transition = false;
 
     }
 

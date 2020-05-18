@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Activator
   - Note
+  - Hideable
   layers:
   - Default
   - TransparentFX
@@ -15,7 +16,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - IgnoreInEditor
   - 
   - 
   - 
@@ -54,6 +55,9 @@ TagManager:
     locked: 0
   - name: PopupTexts
     uniqueID: 1288559699
+    locked: 0
+  - name: Curtain
+    uniqueID: 1959665449
     locked: 0
   - name: Top
     uniqueID: 3510699519
