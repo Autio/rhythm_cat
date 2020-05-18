@@ -49,6 +49,9 @@ TagManager:
   - name: Paws
     uniqueID: 144795147
     locked: 0
+  - name: Cats
+    uniqueID: 1038848277
+    locked: 0
   - name: PopupTexts
     uniqueID: 1288559699
     locked: 0
