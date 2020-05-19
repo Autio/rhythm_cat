@@ -11,9 +11,11 @@ public class GameManager : MonoBehaviour
 
     public AudioSource music;
     public GameObject gameScene;
-    public GameObject startCanvas; 
+    public GameObject startCanvas;
+    public GameObject liveGameCanvas;
     public GameObject endCanvas;
     public GameObject curtain;
+    public GameObject[] buttons;
 
     public bool startPlaying;
     bool levelEnd = false;
@@ -32,7 +34,7 @@ public class GameManager : MonoBehaviour
     public int multiplier = 1;
     public int multiplierThreshold = 10; // How many hits do you need to get in sequence before the multiplier is bumped up
     // Do we want an array of thresholds?
-    public int[] multiplierThresholds = { 4, 8, 16, 32, 64 };
+    public int[] multiplierThresholds = { 4, 8, 16, 32, 64, 128, 256, 512 };
 
     public int health = 40;
     private int maxHealth;
@@ -45,8 +47,7 @@ public class GameManager : MonoBehaviour
     public GameObject performanceText;
     public GameObject finalScoreText;
     public GameObject notesHitText;
-
-
+    
     public GameObject[] buttonHitParticleEffects;
 
     int notesHit;
@@ -60,9 +61,9 @@ public class GameManager : MonoBehaviour
         totalNotes = notes.Length;
         Debug.Log("Total notes: " + totalNotes.ToString());
 
-
         gameScene.SetActive(false);
         startCanvas.SetActive(true);
+        liveGameCanvas.SetActive(false);
         endCanvas.SetActive(false);
 
         instance = this;
@@ -118,6 +119,9 @@ public class GameManager : MonoBehaviour
         HealthUp();
         notesHit++;
 
+        // Visual effect on score object
+        scoreText.GetComponent<GenericText>().PulseText();
+
         try
         {
             scoreText.GetComponent<TMP_Text>().text = currentScore.ToString();
@@ -129,6 +133,8 @@ public class GameManager : MonoBehaviour
             if (CheckMultiplier())
             {
                 multiplier++;
+                multiplierText.GetComponent<GenericText>().PulseText();
+
                 multiplierText.GetComponent<TMP_Text>().text = multiplier.ToString() +"X";
             }
 
@@ -197,7 +203,7 @@ public class GameManager : MonoBehaviour
 
     bool CheckMultiplier()
     {
-        if(sequence % multiplierThreshold == 0)
+        if(sequence > multiplierThresholds[multiplier - 1])
         {
             return true;
         }
@@ -255,7 +261,14 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator DrawCurtain()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.2f);
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            yield return new WaitForSeconds(.2f);
+            buttons[i].GetComponent<ButtonController>().PulseButton();
+           
+        }
+        liveGameCanvas.SetActive(true);
         transition = false;
 
     }
