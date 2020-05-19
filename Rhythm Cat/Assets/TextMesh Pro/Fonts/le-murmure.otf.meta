@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 86d962b7e7e78a2448a4874ae3dcd287
+guid: bb72b52388621d74a9bf64a4b6f48643
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Gangster Grotesk Bold
+  fontName: Le Murmure
   fontNames:
-  - Gangster Grotesk Bold
+  - Le Murmure
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
