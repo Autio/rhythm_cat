@@ -47,15 +47,19 @@ public class NoteObject : MonoBehaviour
                 if (canBePressed)
                 {
                     float yPosition = transform.position.y;
-                    if(isLong)
-                    {
-                        canBePressed = longNoteStartTrigger.GetComponent<LongNoteObject>().canBePressed;
-                    }
                     // If this is a long note, only the start trigger area should count
                     if (isLong && !longNoteStartTrigger.GetComponent<LongNoteObject>().hit)
                     {
                         yPosition = longNoteStartTrigger.transform.position.y;
                     }
+                    if (isLong)
+                    {
+                        if (longNoteStartTrigger.GetComponent<LongNoteObject>().canBePressed == false)
+                        {
+                            return;
+                        }
+                    }
+             
 
                     // Hit quality on the basis of the distance from 0
                     if (Mathf.Abs(yPosition) > 0.25f)
@@ -89,16 +93,19 @@ public class NoteObject : MonoBehaviour
 
         }
 
-        if(Input.GetKey(keyToPress) && isLong && canBePressed && hit)
+        if (canBePressed)
         {
-            longNoteScoreTicker -= Time.deltaTime;
-            if (longNoteScoreTicker < 0)
+            if (Input.GetKey(keyToPress) && isLong && hit)
             {
-                // If a long note is in the right collider area keep incrementing score
-                Debug.Log("Hitting long note!");
-                GameManager.instance.ActivateNoteHitParticles(thisNoteType);
-                GameManager.instance.LongNoteHit();
-                longNoteScoreTicker = 0.3f;
+                longNoteScoreTicker -= Time.deltaTime;
+                if (longNoteScoreTicker < 0)
+                {
+                    // If a long note is in the right collider area keep incrementing score
+                    Debug.Log("Hitting long note!");
+                    GameManager.instance.ActivateNoteHitParticles(thisNoteType);
+                    GameManager.instance.LongNoteHit();
+                    longNoteScoreTicker = 0.3f;
+                }
             }
         }
     }
@@ -115,10 +122,13 @@ public class NoteObject : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "Activator" && !hit)
+        if (other.tag == "Activator" )
         {
             canBePressed = false;
-            GameManager.instance.NoteMissed();
+            if (!hit)
+            {
+                GameManager.instance.NoteMissed();
+            }
         }
     }
 }
