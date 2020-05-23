@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BeatScroller : MonoBehaviour
@@ -7,6 +8,7 @@ public class BeatScroller : MonoBehaviour
     public float beatTempo;
     public bool hasStarted;
     public GameObject horizontalBar;
+    public int noteDirection = 1;
 
     public GameObject[] horizontalBars;
 
@@ -38,14 +40,15 @@ public class BeatScroller : MonoBehaviour
         }
         else
         {
-            transform.position -= new Vector3(0, beatTempo * Time.deltaTime, 0);
+
+            transform.position -= new Vector3(0, beatTempo * noteDirection * Time.deltaTime, 0);
 
             float increment = .5f;
             // Also scroll the horizontal bars
             foreach(GameObject bar in horizontalBars)
             {
-                bar.transform.position -= new Vector3(0, beatTempo * Time.deltaTime, 0);
-                if(bar.transform.position.y < 0)
+                bar.transform.position -= new Vector3(0, beatTempo * noteDirection * Time.deltaTime, 0);
+                if(bar.transform.position.y < -100)
                 {
                     // Put the bar at the top
                     float maxY = 0;

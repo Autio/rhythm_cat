@@ -5,9 +5,12 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEditor.Experimental.GraphView;
 
 public class GameManager : MonoBehaviour
 {
+    public bool debug_mode = false;
+    private bool speed_up = false;
 
     public AudioSource music;
     public GameObject gameScene;
@@ -68,12 +71,43 @@ public class GameManager : MonoBehaviour
 
         instance = this;
         maxHealth = health;
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!transition)
+        if(Input.GetKeyDown(KeyCode.F1))
+        {
+
+            speed_up = !speed_up;
+
+            if (speed_up)
+            {
+                Time.timeScale *= 5;
+                GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch *= 5;
+            }
+            else
+            {
+
+                Time.timeScale = 1;
+                GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = 1;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+
+            GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch *= -1;
+            bs.noteDirection *= -1;
+        }
+
+
+
+        
+
+        if (!transition)
         {
 
         if(startScreen)
@@ -170,12 +204,15 @@ public class GameManager : MonoBehaviour
 
     public void NoteMissed()
     {
-        Debug.Log("Note missed");
-        HealthDown();
-        // Reset sequence if you miss a note
-        sequence = 0;
-        notesMissed++;
-
+        // Immortal if in debug mode
+        if (debug_mode == false)
+        {
+            Debug.Log("Note missed");
+            HealthDown();
+            // Reset sequence if you miss a note
+            sequence = 0;
+            notesMissed++;
+        }
     }
 
     void HealthDown()

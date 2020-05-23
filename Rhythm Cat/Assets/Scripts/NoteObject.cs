@@ -7,6 +7,7 @@ public class NoteObject : MonoBehaviour
 {
     public bool canBePressed;
     public bool hit = false;
+    public bool isLong = false;
     public KeyCode keyToPress;
     public enum noteTypes { blue, red, yellow, white };
     public noteTypes thisNoteType = noteTypes.blue;
