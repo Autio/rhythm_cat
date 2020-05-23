@@ -8,11 +8,14 @@ public class NoteObject : MonoBehaviour
     public bool canBePressed;
     public bool hit = false;
     public bool isLong = false;
+    
+
     public KeyCode keyToPress;
     public enum noteTypes { blue, red, yellow, white };
     public noteTypes thisNoteType = noteTypes.blue;
+    float longNoteScoreTicker = .3f; // every tick add score for held note
 
-
+    GameObject longNoteStartTrigger;
 
     public GameObject perfectText;
     public GameObject goodText;
@@ -20,7 +23,14 @@ public class NoteObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if(isLong)
+        {
+            longNoteStartTrigger = this.transform.Find("StartTrigger").gameObject;
+
+        } else
+        {
+            Debug.LogError("Could not find the child trigger object of the long note. This is needed to give the window of opportunity to hit the note at its beginning.");
+        }
     }
 
     // Update is called once per frame
@@ -28,30 +38,67 @@ public class NoteObject : MonoBehaviour
     {
         if(Input.GetKeyDown(keyToPress))
         {
-            if(canBePressed && !hit)
+            if (hit)
             {
-                // Hit quality on the basis of the distance from 0
-                if(Mathf.Abs(transform.position.y) > 0.25f)
+                return;
+            }
+            else 
+            {
+                if (canBePressed)
                 {
-                    GameManager.instance.NormalHit();
-                } else if (Mathf.Abs(transform.position.y) > .05f)
+                    float yPosition = transform.position.y;
+                    if(isLong)
                     {
-                    GameManager.instance.GoodHit();
-                    // Instantiate the relevant text above this note at the right position
-                    Instantiate(goodText, new Vector3(transform.position.x, 6.85f, 0), goodText.transform.rotation);
+                        canBePressed = longNoteStartTrigger.GetComponent<LongNoteObject>().canBePressed;
+                    }
+                    // If this is a long note, only the start trigger area should count
+                    if (isLong && !longNoteStartTrigger.GetComponent<LongNoteObject>().hit)
+                    {
+                        yPosition = longNoteStartTrigger.transform.position.y;
+                    }
 
-                } else
-                {
-                    GameManager.instance.PerfectHit();
-                    Instantiate(perfectText, new Vector3(transform.position.x, 6.85f, 0), perfectText.transform.rotation);
+                    // Hit quality on the basis of the distance from 0
+                    if (Mathf.Abs(yPosition) > 0.25f)
+                    {
+                        GameManager.instance.NormalHit();
+                    }
+                    else if (Mathf.Abs(yPosition) > .05f)
+                    {
+                        GameManager.instance.GoodHit();
+                        // Instantiate the relevant text above this note at the right position
+                        Instantiate(goodText, new Vector3(transform.position.x, 6.85f, 0), goodText.transform.rotation);
 
+                    }
+                    else
+                    {
+                        GameManager.instance.PerfectHit();
+                        Instantiate(perfectText, new Vector3(transform.position.x, 6.85f, 0), perfectText.transform.rotation);
+
+                    }
+                    hit = true;
+
+                    // If it's not a long note, make the note invisible
+                    if (!isLong)
+                    {
+                        GetComponent<SpriteRenderer>().enabled = false;
+                    }
+                    // play the effect on the button
+                    GameManager.instance.ActivateNoteHitParticles(thisNoteType);
                 }
-                hit = true;
-                // Make the note invisible
-                GetComponent<SpriteRenderer>().enabled = false;
+            }
 
-                // play the effect on the button
+        }
+
+        if(Input.GetKey(keyToPress) && isLong && canBePressed && hit)
+        {
+            longNoteScoreTicker -= Time.deltaTime;
+            if (longNoteScoreTicker < 0)
+            {
+                // If a long note is in the right collider area keep incrementing score
+                Debug.Log("Hitting long note!");
                 GameManager.instance.ActivateNoteHitParticles(thisNoteType);
+                GameManager.instance.LongNoteHit();
+                longNoteScoreTicker = 0.3f;
             }
         }
     }

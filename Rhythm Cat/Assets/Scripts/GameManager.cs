@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public int currentScore;
+    public int scorePerLongHit = 10; // score boost per increment
     public int scorePerNormalHit = 80;
     public int scorePerGoodHit = 100;
     public int scorePerPerfectHit = 120;
@@ -199,6 +200,14 @@ public class GameManager : MonoBehaviour
         currentScore += scorePerPerfectHit * multiplier;
         Debug.Log("Perfect hit!");
         NoteHit();
+
+    }
+
+    public void LongNoteHit()
+    {
+        currentScore += scorePerLongHit * multiplier;
+        scoreText.GetComponent<GenericText>().PulseText();
+        scoreText.GetComponent<TMP_Text>().text = currentScore.ToString();
 
     }
 
