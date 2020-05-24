@@ -11,6 +11,10 @@ public class ButtonController : MonoBehaviour
     bool notePresent = false;
     bool songStarted = false;
 
+    public GameObject movingMouth;
+    public float duration = .3f;
+    public float scaleBoost = 1.5f;
+
     public KeyCode keyToPress;
     public GameObject catMouth;
 
@@ -26,8 +30,7 @@ public class ButtonController : MonoBehaviour
     {
         if(Input.GetKeyDown(keyToPress))
         {
-            ShortNote();
-
+            MouthOpen();
             sr.sprite = pressedImage;
             // Check whether there's a note under
             if (!notePresent && songStarted)
@@ -40,6 +43,8 @@ public class ButtonController : MonoBehaviour
 
         if(Input.GetKeyUp(keyToPress))
         {
+            MouthClose();
+
             sr.sprite = defaultImage;
         }
     }
@@ -74,15 +79,24 @@ public class ButtonController : MonoBehaviour
         }
     }
 
-    public void ShortNote()
+    public void MouthOpen()
     {
         // Make the mouth seem like it's singing
-        // Send out a note sprite
-        // Make it grow and shrink
-        
+
+        Sequence seq = DOTween.Sequence();
+        seq.Append(movingMouth.GetComponent<Transform>().DOScale(scaleBoost, duration / 2));
+        //    seq.Append(movingMouth.GetComponent<Transform>().DOScale(1f, duration / 2));
+
+
         //Debug.Log("Mouth of cat " + keyToPress.ToString() + " Singing");
         //Sequence seq = DOTween.Sequence();
         //seq.Append(catMouth.GetComponent<Transform>().DOScale(12f, 1f));
         //seq.Append(catMouth.GetComponent<Transform>().DOScale(1f, .2f));
+    }
+
+    public void MouthClose()
+    {
+        Sequence seq = DOTween.Sequence();
+        seq.Append(movingMouth.GetComponent<Transform>().DOScale(1f, duration / 2));
     }
 }

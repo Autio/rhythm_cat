@@ -41,14 +41,14 @@ public class Cat : MonoBehaviour
         // Open and close the mouth
         Sequence seq = DOTween.Sequence();
 
-        try
-        {
-            seq.Append(movingMouth.GetComponent<Transform>().DOScale(scaleBoost, duration / 2));
-            seq.Append(movingMouth.GetComponent<Transform>().DOScale(1f, duration / 2));
-        } catch
-        {
+        //try
+        //{
+        //    seq.Append(movingMouth.GetComponent<Transform>().DOScale(scaleBoost, duration / 2));
+        //    seq.Append(movingMouth.GetComponent<Transform>().DOScale(1f, duration / 2));
+        //} catch
+        //{
 
-        }
+        //}
         
         // Instantiate and play new particle system
         GameObject newParticles = Instantiate(noteParticles, noteParticles.transform.position, Quaternion.identity);
