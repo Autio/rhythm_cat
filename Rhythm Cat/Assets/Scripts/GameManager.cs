@@ -23,7 +23,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] cats;
 
     public bool startPlaying;
-    bool levelEnd = false;
+    public bool levelEnd = false;
+    bool ending = false; // Music slows down when ending
     bool startScreen = true;
     bool transition = false;
 
@@ -111,7 +112,13 @@ public class GameManager : MonoBehaviour
         }
 
 
-
+        if(ending)
+        {
+            if(music.pitch > .1f)
+            {
+                music.pitch -= Time.deltaTime / 3;
+            }
+        }
         
 
         if (!transition)
@@ -240,7 +247,7 @@ public class GameManager : MonoBehaviour
         if (health <= 0)
         {
             // Level lost
-            EndLevel();
+            LoseLevel();
 
         }
     }
@@ -322,6 +329,20 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void LoseLevel()
+    {
+
+        // Slow down the music
+        ending = true;
+
+        levelEnd = true;
+        StartCoroutine(LevelLoseCoroutine());
+        transition = true;
+
+
+
+    }
+
     private IEnumerator DrawCurtain()
     {
         yield return new WaitForSeconds(1.2f);
@@ -352,6 +373,36 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private IEnumerator LevelLoseCoroutine()
+    {
+
+
+        yield return new WaitForSeconds(2.2f);
+            
+        music.Stop();
+
+        // Start moving the curtains to the right
+        Sequence seq = DOTween.Sequence();
+        seq.Append(curtain.GetComponent<Transform>().DOMoveX(4, 2f));
+
+        gameScene.SetActive(false);
+        startCanvas.SetActive(false);
+        endCanvas.SetActive(true);
+
+        string classification = Classification((float)notesHit / (float)totalNotes);
+
+
+        performanceText.GetComponent<TMP_Text>().text = "Catastrophe!";
+        finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
+        notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
+
+
+        // GameObject.Find("TopHatParticles").GetComponent<ParticleSystem>().Play(); No top hats, bad cat
+        yield return new WaitForSeconds(2.5f);
+        transition = false;
+
+    }
+
     string Classification(float percentage)
     {
         if (percentage > .9)
@@ -367,7 +418,7 @@ public class GameManager : MonoBehaviour
             return "Pawsitively great!";
             
         }
-        if (percentage > .6)
+        if (percentage > .5)
         {
             return "Feline fine";
         }

@@ -18,35 +18,39 @@ public class ButtonController : MonoBehaviour
     public KeyCode keyToPress;
     public GameObject catMouth;
 
+    GameManager gm; 
+
     // Start is called before the first frame update
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(keyToPress))
-        {
-            MouthOpen();
-            sr.sprite = pressedImage;
-            // Check whether there's a note under
-            if (!notePresent && songStarted)
+
+            if (Input.GetKeyDown(keyToPress))
             {
-                // Tried to hit a note but missed
-                GameObject.Find("GameManager").GetComponent<GameManager>().NoteMissed();
+                MouthOpen();
+                sr.sprite = pressedImage;
+                // Check whether there's a note under
+                if (!notePresent && songStarted)
+                {
+                    // Tried to hit a note but missed
+                    GameObject.Find("GameManager").GetComponent<GameManager>().NoteMissed();
+                }
+
             }
-               
-        }
 
-        if(Input.GetKeyUp(keyToPress))
-        {
-            MouthClose();
+            if (Input.GetKeyUp(keyToPress))
+            {
+                MouthClose();
 
-            sr.sprite = defaultImage;
-        }
+                sr.sprite = defaultImage;
+            }
+        
     }
 
     public void PulseButton()
