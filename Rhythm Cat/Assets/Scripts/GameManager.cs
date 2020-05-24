@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
     public GameObject performanceText;
     public GameObject finalScoreText;
     public GameObject notesHitText;
+    public GameObject tryagainText;
     
     public GameObject[] buttonHitParticleEffects;
 
@@ -388,6 +389,8 @@ public class GameManager : MonoBehaviour
         gameScene.SetActive(false);
         startCanvas.SetActive(false);
         endCanvas.SetActive(true);
+        tryagainText.gameObject.SetActive(true);
+
 
         string classification = Classification((float)notesHit / (float)totalNotes);
 
