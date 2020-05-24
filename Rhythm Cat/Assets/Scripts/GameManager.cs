@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] buttons;
     public GameObject getReady;
 
+    public GameObject[] cats;
+
     public bool startPlaying;
     bool levelEnd = false;
     bool startScreen = true;
@@ -55,6 +57,8 @@ public class GameManager : MonoBehaviour
     
     public GameObject[] buttonHitParticleEffects;
 
+    public GameObject endCat;
+
     int notesHit;
     int notesMissed;
     int totalNotes; // How many notes on the scene
@@ -70,6 +74,8 @@ public class GameManager : MonoBehaviour
         startCanvas.SetActive(true);
         liveGameCanvas.SetActive(false);
         endCanvas.SetActive(false);
+        endCat.SetActive(false);
+
 
         instance = this;
         maxHealth = health;
@@ -303,7 +309,15 @@ public class GameManager : MonoBehaviour
         startCanvas.SetActive(false);
         endCanvas.SetActive(true);
 
-        performanceText.GetComponent<TMP_Text>().text = Classification((float)notesHit / (float)totalNotes);
+        string classification = Classification((float)notesHit / (float)totalNotes);
+
+        // Applause if it wasn't awful
+        if (classification != "MeOWWWW!")
+        {
+            GameObject.Find("SoundEffect").GetComponent<AudioSource>().Play();
+        }
+
+        performanceText.GetComponent<TMP_Text>().text = classification;
         finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
         notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
 
@@ -314,6 +328,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1.2f);
         // Start putting the lights on
         GameObject.Find("LightingManager").GetComponent<LightingManager>().LightsOn();
+
         for (int i = 0; i < buttons.Length; i++)
         {
             yield return new WaitForSeconds(.2f);
@@ -332,6 +347,9 @@ public class GameManager : MonoBehaviour
         GameObject.Find("TopHatParticles").GetComponent<ParticleSystem>().Play();
         yield return new WaitForSeconds(2.5f);
         transition = false;
+
+        // Show happy cat 
+        endCat.SetActive(true);
 
     }
 
@@ -357,4 +375,27 @@ public class GameManager : MonoBehaviour
 
         return "MeOWWWW!";
     }
+    public void SendCatNoteParticle(NoteObject.noteTypes n)
+    {
+        if (n == NoteObject.noteTypes.blue)
+        {
+            cats[0].GetComponent<Cat>().PlayNote();
+        }
+        if (n == NoteObject.noteTypes.red)
+        {
+            cats[1].GetComponent<Cat>().PlayNote();
+
+        }
+        if (n == NoteObject.noteTypes.yellow)
+        {
+            cats[2].GetComponent<Cat>().PlayNote();
+
+        }
+        if (n == NoteObject.noteTypes.white)
+        {
+            cats[3].GetComponent<Cat>().PlayNote();
+
+        }
+    }
+
 }

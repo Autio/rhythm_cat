@@ -12,6 +12,7 @@ public class ButtonController : MonoBehaviour
     bool songStarted = false;
 
     public KeyCode keyToPress;
+    public GameObject catMouth;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,8 @@ public class ButtonController : MonoBehaviour
     {
         if(Input.GetKeyDown(keyToPress))
         {
+            ShortNote();
+
             sr.sprite = pressedImage;
             // Check whether there's a note under
             if (!notePresent && songStarted)
@@ -69,5 +72,17 @@ public class ButtonController : MonoBehaviour
             notePresent = false;
             
         }
+    }
+
+    public void ShortNote()
+    {
+        // Make the mouth seem like it's singing
+        // Send out a note sprite
+        // Make it grow and shrink
+        
+        //Debug.Log("Mouth of cat " + keyToPress.ToString() + " Singing");
+        //Sequence seq = DOTween.Sequence();
+        //seq.Append(catMouth.GetComponent<Transform>().DOScale(12f, 1f));
+        //seq.Append(catMouth.GetComponent<Transform>().DOScale(1f, .2f));
     }
 }

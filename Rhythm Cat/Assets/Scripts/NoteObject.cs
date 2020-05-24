@@ -88,6 +88,7 @@ public class NoteObject : MonoBehaviour
                     }
                     // play the effect on the button
                     GameManager.instance.ActivateNoteHitParticles(thisNoteType);
+                    GameManager.instance.SendCatNoteParticle(thisNoteType);
                 }
             }
 
