@@ -48,7 +48,7 @@ public class BeatScroller : MonoBehaviour
             foreach(GameObject bar in horizontalBars)
             {
                 bar.transform.position -= new Vector3(0, beatTempo * noteDirection * Time.deltaTime, 0);
-                if(bar.transform.position.y < -100)
+                if(bar.transform.position.y < -75)
                 {
                     // Put the bar at the top
                     float maxY = 0;

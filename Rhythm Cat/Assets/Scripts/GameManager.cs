@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     public GameObject endCanvas;
     public GameObject curtain;
     public GameObject[] buttons;
+    public GameObject getReady;
 
     public bool startPlaying;
     bool levelEnd = false;
@@ -134,6 +135,9 @@ public class GameManager : MonoBehaviour
                 bs.hasStarted = true;
 
                 music.Play();
+                // Show get ready text
+                getReady.SetActive(true);
+                getReady.GetComponent<GetReady>().BringToView();
             }
         } else if (levelEnd)
         {
@@ -308,6 +312,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator DrawCurtain()
     {
         yield return new WaitForSeconds(1.2f);
+        // Start putting the lights on
+        GameObject.Find("LightingManager").GetComponent<LightingManager>().LightsOn();
         for (int i = 0; i < buttons.Length; i++)
         {
             yield return new WaitForSeconds(.2f);

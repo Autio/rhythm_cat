@@ -9,6 +9,7 @@ public class ButtonController : MonoBehaviour
     public Sprite defaultImage;
     public Sprite pressedImage;
     bool notePresent = false;
+    bool songStarted = false;
 
     public KeyCode keyToPress;
 
@@ -26,7 +27,7 @@ public class ButtonController : MonoBehaviour
         {
             sr.sprite = pressedImage;
             // Check whether there's a note under
-            if (!notePresent)
+            if (!notePresent && songStarted)
             {
                 // Tried to hit a note but missed
                 GameObject.Find("GameManager").GetComponent<GameManager>().NoteMissed();
@@ -53,6 +54,11 @@ public class ButtonController : MonoBehaviour
         if (other.tag == "Note")
         {
             notePresent = true;
+        }
+
+        if(other.tag == "Start")
+        {
+            songStarted = true;
         }
     }
 

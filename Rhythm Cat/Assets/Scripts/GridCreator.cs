@@ -13,7 +13,7 @@ public class GridCreator
     // Start is called before the first frame update
     static void Create()
     {
-        for(int i = 0; i < 300; i++)
+        for(int i = 0; i < 600; i++)
         {
             Debug.Log("Whatnow");
             GameObject newBar = (GameObject)PrefabUtility.InstantiatePrefab(Selection.activeObject as GameObject);
