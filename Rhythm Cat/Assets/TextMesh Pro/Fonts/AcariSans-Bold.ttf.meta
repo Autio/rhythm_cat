@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: b8816df9f57773e4688a01607abe7fcc
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Acari Sans
+  fontNames:
+  - Acari Sans
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 56c6be78640c3684b8d589eb8c0a7b35, type: 3}
+  - {fileID: 12800000, guid: 854c64d82087f6e4e8766c376f3007d2, type: 3}
+  - {fileID: 12800000, guid: 44fc53cca0df876459f055916cc359c6, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
