@@ -20,6 +20,9 @@ public class Cat : MonoBehaviour
 
     public void PlayNote()
     {
-        noteParticles.GetComponent<ParticleSystem>().Play();
+        // Instantiate and play new particle system
+        GameObject newParticles = Instantiate(noteParticles, noteParticles.transform.position, Quaternion.identity);
+        newParticles.GetComponent<ParticleSystem>().Play();
+        Destroy(newParticles, 1.1f);
     }
 }
