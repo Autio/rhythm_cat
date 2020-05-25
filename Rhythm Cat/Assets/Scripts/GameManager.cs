@@ -8,93 +8,120 @@ using DG.Tweening;
 
 public class GameManager : MonoBehaviour
 {
-    public bool debug_mode = false;
-    private bool speed_up = false;
-
-    public AudioSource music;
-    public GameObject gameScene;
-    public GameObject startCanvas;
-    public GameObject liveGameCanvas;
-    public GameObject endCanvas;
-    public GameObject curtain;
-    public GameObject[] buttons;
-    public GameObject getReady;
-
-    public GameObject[] cats;
-
-    public bool startPlaying;
-    public bool levelEnd = false;
-    bool ending = false; // Music slows down when ending
-    bool startScreen = true;
-    bool transition = false;
-
-    public BeatScroller bs;
-
+    /// <summary>
+    /// This is the main game manager class where the sequence of the game, the main game loop, scoring, etc are set
+    /// </summary>
+    
+    // Makes sure there's only one GameManager
     public static GameManager instance;
 
-    public Color goodHealthColor;
-    public Color badHealthColor;
-    public GameObject fill;
-    public GameObject handle;
+    // This makes the player invulnerable
+    public bool debug_mode = false;
 
+    // Toggle for faster play mode 
+    private bool speed_up = false;
+
+    public AudioSource music;           // Music source object
+    public GameObject gameScene;        // The game scene holder for easy on/off
+    public GameObject startCanvas;      // What gets shown as the starting screen
+    public GameObject liveGameCanvas;   // What gets shown during gameplay
+    public GameObject endCanvas;        // What gets shown as the ending screen
+    public GameObject curtain;          // Curtain that gets drawn at the start and closed at the end
+    public GameObject[] buttons;        // The four buttons players have to press
+    public GameObject[] cats;           // The cats on the right side of the main playing area
+
+    /// <summary>
+    /// GAME SEQUENCING
+    /// </summary>
+    public bool startPlaying;
+    public bool levelEnd = false;
+    bool ending = false;            // Music slows down when ending
+    bool startScreen = true;        
+    bool transition = false;        // Allows disabling of player input during transitions
+
+    // Beat scroller handles the motion of the music grid and notes on it
+    public BeatScroller bs;
+
+    // Health and health-bar
+    public int health = 40;         // Hit points at any given time
+    private int maxHealth;          // Set to health at the start and used to compare how full the health bar should be
+
+    public GameObject healthBar;
+    public Color goodHealthColor;   // What colour is the bar when things are good
+    public Color badHealthColor;    // What colour is the bar when things are bad
+    public GameObject fill;         // The health bar fill
+    public GameObject handle;       // The health bar icon / handle 
+
+    /// <summary>
+    /// SCORING
+    /// </summary>
     public int currentScore;
-    public int scorePerLongHit = 10; // score boost per increment
+    public int scorePerLongHit = 10;    // score boost per increment
     public int scorePerNormalHit = 80;
     public int scorePerGoodHit = 100;
     public int scorePerPerfectHit = 120;
-    public int sequence = 0; // Sequence of correctly hit notes
+    public int sequence = 0;            // Sequence of correctly hit notes
     public int multiplier = 1;
-    public int multiplierThreshold = 10; // How many hits do you need to get in sequence before the multiplier is bumped up
-    // Do we want an array of thresholds?
+    // How many hits do you need to get in sequence before the multiplier is bumped up
     public int[] multiplierThresholds = { 4, 8, 16, 32, 64, 128, 256, 512 };
-
-    public int health = 40;
-    private int maxHealth;
-
-    public GameObject scoreText;
-    public GameObject multiplierText;
-    public GameObject sequenceText;
-    public GameObject healthBar;
-
-    public GameObject performanceText;
-    public GameObject finalScoreText;
-    public GameObject notesHitText;
-    public GameObject tryagainText;
-    
-    public GameObject[] buttonHitParticleEffects;
-
-    public GameObject endCat;
 
     int notesHit;
     int notesMissed;
     int totalNotes; // How many notes on the scene
 
+    /// <summary>
+    /// Text objects
+    /// </summary>
+    public GameObject getReady;
+
+    // Texts during gameplay
+    public GameObject scoreText;
+    public GameObject multiplierText;
+    public GameObject sequenceText;
+
+    // Texts for the end canvas
+    public GameObject performanceText;
+    public GameObject finalScoreText;
+    public GameObject notesHitText;
+    public GameObject tryagainText;
+    
+    // Cat to show at the end after a succesfull level
+    public GameObject endCat;
+
+
+    public GameObject[] buttonHitParticleEffects;
+
     // Start is called before the first frame update
     void Start()
     {
-        GameObject[] notes = GameObject.FindGameObjectsWithTag("Note");
-        totalNotes = notes.Length;
-        Debug.Log("Total notes: " + totalNotes.ToString());
+        instance = this;    // Ensures there's only one game manager only
+        maxHealth = health;
 
+        GameObject[] notes = GameObject.FindGameObjectsWithTag("Note");
+        totalNotes = notes.Length; // Count all notes
+        Debug.Log("Total notes in this level: " + totalNotes.ToString());
+
+        // Make sure that only the canvases and views we want to be active at the start
+        // Actually are active
         gameScene.SetActive(false);
         startCanvas.SetActive(true);
         liveGameCanvas.SetActive(false);
         endCanvas.SetActive(false);
         endCat.SetActive(false);
-
-
-        instance = this;
-        maxHealth = health;
-
-
+        
     }
 
+    /// <summary>
+    /// MAIN GAME LOOP
+    /// </summary>
     // Update is called once per frame
     void Update()
     {
+        
+        // Debug key which makes the game run faster
         if(Input.GetKeyDown(KeyCode.F1))
         {
-
+            // Toggle
             speed_up = !speed_up;
 
             if (speed_up)
@@ -110,71 +137,73 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // Reverses the song directino 
         if (Input.GetKeyDown(KeyCode.F2))
         {
 
-            GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch *= -1;
-            bs.noteDirection *= -1;
+            GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch *= -1; // Song reversal
+            bs.noteDirection *= -1; // Movement of grid and notes on the grid
         }
 
-
+        // If the player is losing the level, make the music slow down to a halt gradually
         if(ending)
         {
-            if(music.pitch > .1f)
+            if(music.pitch > .02f)
             {
                 music.pitch -= Time.deltaTime / 3;
             }
         }
         
-
         if (!transition)
         {
 
-        if(startScreen)
-        {
-            if (Input.anyKeyDown)
+            if(startScreen)
             {
-                startScreen = false;
-                // enable main game and hide the start screen
-                // Start moving the curtains to the right 
-                Sequence seq = DOTween.Sequence();
-                seq.Append(curtain.GetComponent<Transform>().DOMoveX(-12.64f, 2f));
-                transition = true;
-                StartCoroutine(DrawCurtain());
-                startCanvas.SetActive(false);
-                gameScene.SetActive(true);
+                // Any key take the player from the start screen
+                if (Input.anyKeyDown)
+                {   
+                    // enable main game and hide the start screen
+                    // Start moving the curtains to the right 
+                    startScreen = false;
+                    Sequence seq = DOTween.Sequence();
+                    seq.Append(curtain.GetComponent<Transform>().DOMoveX(-12.64f, 2f));
+                    transition = true;
+                    StartCoroutine(DrawCurtain());
+                    startCanvas.SetActive(false);
+                    gameScene.SetActive(true);
 
+                }
             }
-        } else if (!startPlaying)
-        {
-            if(Input.anyKeyDown)
+            else if (!startPlaying)
             {
-                startPlaying = true;
-                bs.hasStarted = true;
+                // Actually start the music rolling and the game playing once the curtain is drawn
+                if(Input.anyKeyDown)
+                {
+                    startPlaying = true;
+                    bs.hasStarted = true;
 
-                music.Play();
-                // Show get ready text
-                getReady.SetActive(true);
-                getReady.GetComponent<GetReady>().BringToView();
-            }
-        } else if (levelEnd)
-        {
-            if(Input.anyKeyDown)
+                    music.Play();
+
+                    // Show get ready text
+                    getReady.SetActive(true);
+                    getReady.GetComponent<GetReady>().BringToView();
+                }
+            } else if (levelEnd)
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                // Restart the game, but only if the level has ended
+                if(Input.anyKeyDown)
+                {
+                    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                }
             }
-            
         }
-
-        }
-
     }
 
+    // What happens when any note has been successfully hit
     public void NoteHit()
     {
-        Debug.Log("Note hit");
         HealthUp();
-        notesHit++;
+        notesHit++; // We increase our tally of hit notes
 
         // Visual effect on score object
         scoreText.GetComponent<GenericText>().PulseText();
@@ -185,16 +214,13 @@ public class GameManager : MonoBehaviour
             sequence++;
             sequenceText.GetComponent<TMP_Text>().text = sequence.ToString();
 
-
             // Check if it is time to bump up the multiplier
             if (CheckMultiplier())
             {
                 multiplier++;
                 multiplierText.GetComponent<GenericText>().PulseText();
-
                 multiplierText.GetComponent<TMP_Text>().text = multiplier.ToString() +"X";
             }
-
         }
         catch
         {
@@ -233,6 +259,7 @@ public class GameManager : MonoBehaviour
 
     }
 
+    // What happens when you miss a note
     public void NoteMissed()
     {
         // Immortal if in debug mode
@@ -240,6 +267,7 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Note missed");
             HealthDown();
+
             // Reset sequence if you miss a note
             sequence = 0;
             notesMissed++;
@@ -248,7 +276,7 @@ public class GameManager : MonoBehaviour
 
     void HealthDown()
     {
-        health -= 4;
+        health -= 4; // FIXME: hard-coded health decrement
         UpdateHealthBar();
         if (health <= 0)
         {
@@ -263,7 +291,7 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-        health += 2;
+        health += 2; // FIXME: hard-coded health increment
         health = Mathf.Clamp(health, 1, maxHealth);
         UpdateHealthBar();
         
