@@ -32,6 +32,11 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+    public Color goodHealthColor;
+    public Color badHealthColor;
+    public GameObject fill;
+    public GameObject handle;
+
     public int currentScore;
     public int scorePerLongHit = 10; // score boost per increment
     public int scorePerNormalHit = 80;
@@ -275,7 +280,19 @@ public class GameManager : MonoBehaviour
 
     void UpdateHealthBar()
     {
-        healthBar.GetComponent<Slider>().value = (float)health/ (float)maxHealth;
+        float ratio = (float)health / (float)maxHealth;
+        healthBar.GetComponent<Slider>().value = ratio;
+
+        // Check if the health bar color should change
+        if(ratio < .3f)
+        {
+            fill.GetComponent<Image>().color = badHealthColor;
+            handle.GetComponent<Image>().color = badHealthColor;
+        } else
+        {
+            fill.GetComponent<Image>().color = goodHealthColor;
+            handle.GetComponent<Image>().color = goodHealthColor;
+        }
     }
 
     public void ActivateNoteHitParticles(NoteObject.noteTypes n)
@@ -317,6 +334,7 @@ public class GameManager : MonoBehaviour
         gameScene.SetActive(false);
         startCanvas.SetActive(false);
         endCanvas.SetActive(true);
+        tryagainText.gameObject.SetActive(false);
 
 
         // Applause if it wasn't awful
@@ -398,11 +416,10 @@ public class GameManager : MonoBehaviour
 
         string classification = Classification((float)notesHit / (float)totalNotes);
 
-
         performanceText.GetComponent<TMP_Text>().text = "Catastrophe!";
         finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
         // Don't show the notes hit when you fail a level
-        // notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
+        notesHitText.GetComponent<TMP_Text>().text = "";
 
         yield return new WaitForSeconds(2.5f);
         transition = false;
