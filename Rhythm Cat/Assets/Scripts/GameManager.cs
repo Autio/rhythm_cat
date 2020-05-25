@@ -310,13 +310,14 @@ public class GameManager : MonoBehaviour
         Sequence seq = DOTween.Sequence();
         seq.Append(curtain.GetComponent<Transform>().DOMoveX(4, 2f));
         transition = true;
-        StartCoroutine(CurtainCall());
+        string classification = Classification((float)notesHit / (float)totalNotes);
+
+        StartCoroutine(CurtainCall(classification));
 
         gameScene.SetActive(false);
         startCanvas.SetActive(false);
         endCanvas.SetActive(true);
 
-        string classification = Classification((float)notesHit / (float)totalNotes);
 
         // Applause if it wasn't awful
         if (classification != "MeOWWWW!")
@@ -361,7 +362,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private IEnumerator CurtainCall()
+    private IEnumerator CurtainCall(string classification)
     {
 
         yield return new WaitForSeconds(1.5f);
@@ -369,8 +370,11 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
         transition = false;
 
-        // Show happy cat 
-        endCat.SetActive(true);
+        // Show happy cat if not clawful
+        if (classification != "MeOWWWW!")
+        {
+            endCat.SetActive(true);
+        }
 
     }
 
@@ -397,10 +401,9 @@ public class GameManager : MonoBehaviour
 
         performanceText.GetComponent<TMP_Text>().text = "Catastrophe!";
         finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
-        notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
+        // Don't show the notes hit when you fail a level
+        // notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
 
-
-        // GameObject.Find("TopHatParticles").GetComponent<ParticleSystem>().Play(); No top hats, bad cat
         yield return new WaitForSeconds(2.5f);
         transition = false;
 
