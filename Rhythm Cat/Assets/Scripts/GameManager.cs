@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
 
     // Toggle for faster play mode 
     private bool speed_up = false;
+    private float[] gameSpeeds = { 1, 1.5f, 2, 5f };
+    private int currentGameSpeedIndex = 0;
 
     public AudioSource music;           // Music source object
     public GameObject gameScene;        // The game scene holder for easy on/off
@@ -98,6 +100,10 @@ public class GameManager : MonoBehaviour
         instance = this;    // Ensures there's only one game manager only
         maxHealth = health;
 
+        // Set basic speed and pitch
+        Time.timeScale = gameSpeeds[0];
+        GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[0];
+
         GameObject[] notes = GameObject.FindGameObjectsWithTag("Note");
         totalNotes = notes.Length; // Count all notes
         Debug.Log("Total notes in this level: " + totalNotes.ToString());
@@ -126,19 +132,15 @@ public class GameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.F1))
         {
             // Toggle
-            speed_up = !speed_up;
-
-            if (speed_up)
+            currentGameSpeedIndex++;
+            if(currentGameSpeedIndex > gameSpeeds.Length - 1)
             {
-                Time.timeScale *= 5;
-                GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch *= 5;
+                currentGameSpeedIndex = 0;
             }
-            else
-            {
 
-                Time.timeScale = 1;
-                GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = 1;
-            }
+            Time.timeScale = gameSpeeds[currentGameSpeedIndex];
+            GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[currentGameSpeedIndex];
+
         }
 
         // Reverses the song directino 
