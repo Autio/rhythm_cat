@@ -9,6 +9,7 @@ TagManager:
   - Hideable
   - Start
   - LongNote
+  - LongNoteTrigger
   layers:
   - Default
   - TransparentFX

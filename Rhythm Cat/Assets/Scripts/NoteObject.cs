@@ -140,15 +140,25 @@ public class NoteObject : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "Activator" )
+        if (other.tag == "Activator")
         {
             canBePressed = false;
             if (!hit)
             {
-                GameManager.instance.NoteMissed();
+                if (this.transform.tag != "LongNote" && this.transform.tag != "LongNoteTrigger")
+                {
+                    Debug.Log("Note missed and my tag is " + transform.tag);
+                    Debug.Log("Note missed and my name is " + transform.name);
+                    GameManager.instance.NoteMissed();
 
-                // Display the missed text above this button
-                GameObject g = Instantiate(missedText, new Vector3(transform.position.x, 2.55f, 0), missedText.transform.rotation) as GameObject;
+                    // Display the missed text above this button
+                    GameObject g = Instantiate(missedText, new Vector3(transform.position.x, 2.55f, 0), missedText.transform.rotation) as GameObject;
+
+                }
+                else
+                {
+                    Debug.Log("Long note exited");
+                }
 
             }
         }

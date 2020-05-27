@@ -5,11 +5,13 @@ using DG.Tweening;
 
 public class ButtonController : MonoBehaviour
 {
+    public bool allowMisses = true;
     private SpriteRenderer sr;
     public Sprite defaultImage;
     public Sprite pressedImage;
     bool notePresent = false;
     bool songStarted = false;
+    bool longNote = false;
 
     public GameObject movingMouth;
     public float duration = .3f;
@@ -56,7 +58,7 @@ public class ButtonController : MonoBehaviour
                 }
                 
                 // Check whether there's a note under
-                if (!noteUnder && songStarted)
+                if (!noteUnder && songStarted && !longNote && allowMisses)
                 {
                     // Tried to hit a note but missed
                     GameObject.Find("GameManager").GetComponent<GameManager>().NoteMissed();
@@ -84,11 +86,15 @@ public class ButtonController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Note" || other.tag == "LongNote")
+        if (other.tag == "Note")
         {
             notePresent = true;
             notesUnderMe.Add(other.gameObject);
 
+        }
+        if (other.tag == "LongNote")
+        {
+            longNote = true;
         }
 
         if (other.tag == "Start")
@@ -99,11 +105,15 @@ public class ButtonController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "Note" || other.tag == "LongNote")
+        if (other.tag == "Note" )
         {
             notePresent = false;
             notesUnderMe.Remove(other.gameObject);
 
+        }
+        if (other.tag == "LongNote")
+        {
+            longNote = false;
         }
     }
 

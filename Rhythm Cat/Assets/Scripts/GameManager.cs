@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
 
     // Toggle for faster play mode 
     private bool speed_up = false;
-    private float[] gameSpeeds = { 1, 1.5f, 2, 5f };
+    private float[] gameSpeeds = { 1, 1.5f, 2f };
     private int currentGameSpeedIndex = 0;
 
     public AudioSource music;           // Music source object
@@ -78,6 +78,9 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public GameObject getReady;
 
+    public GameObject speedText;
+    public GameObject speedTextLabel;
+
     // Texts during gameplay
     public GameObject scoreText;
     public GameObject multiplierText;
@@ -128,6 +131,37 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// MAIN GAME LOOP
     /// </summary>
+    /// 
+    public void CycleSpeed()
+    {
+
+        // Toggle
+        currentGameSpeedIndex++;
+ 
+        if (currentGameSpeedIndex > gameSpeeds.Length - 1)
+        {
+            currentGameSpeedIndex = 0;
+        }
+
+        Debug.Log("Game speed set to " + gameSpeeds[currentGameSpeedIndex].ToString());
+
+        Time.timeScale = gameSpeeds[currentGameSpeedIndex];
+        // Change only tempo but try to maintain 
+        GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[currentGameSpeedIndex];
+        // Set the appropriate mixer snapshot so that 
+        snapshots[currentGameSpeedIndex].TransitionTo(.1f);
+
+        try
+        {
+            speedText.GetComponent<TMP_Text>().text = "<- " + gameSpeeds[currentGameSpeedIndex].ToString() + "X ->";
+        }
+        catch
+        {
+
+        }
+
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -135,23 +169,10 @@ public class GameManager : MonoBehaviour
         // Debug key which makes the game run faster
         if(Input.GetKeyDown(KeyCode.F1))
         {
-            // Toggle
-            currentGameSpeedIndex++;
-            if(currentGameSpeedIndex > gameSpeeds.Length - 1)
-            {
-                currentGameSpeedIndex = 0;
-            }
-
-            Time.timeScale = gameSpeeds[currentGameSpeedIndex];
-            // Change only tempo but try to maintain 
-            GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[currentGameSpeedIndex];
-            snapshots[currentGameSpeedIndex].TransitionTo(.1f);
-            //audioMixer.SetFloat("MasterPitchShift", 1f / gameSpeeds[currentGameSpeedIndex]);
-
-
+            CycleSpeed();
         }
 
-        // Reverses the song directino 
+        // Reverses the song direction 
         if (Input.GetKeyDown(KeyCode.F2))
         {
 
@@ -173,8 +194,13 @@ public class GameManager : MonoBehaviour
 
             if(startScreen)
             {
+                if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    CycleSpeed();
+                }
+
                 // Any key take the player from the start screen
-                if (Input.anyKeyDown)
+                if (Input.GetKey(KeyCode.Space))
                 {   
                     // enable main game and hide the start screen
                     // Start moving the curtains to the right 
