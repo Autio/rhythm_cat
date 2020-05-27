@@ -4,18 +4,9 @@ using UnityEngine;
 
 public class LevelEnder : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // Just used to end the level
+    // Put this on an object that gets scrolled alongside the notes, after them and once
+    // it hits the buttons, the level ends 
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Entered a trigger");

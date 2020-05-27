@@ -8,6 +8,7 @@ TagManager:
   - Note
   - Hideable
   - Start
+  - LongNote
   layers:
   - Default
   - TransparentFX

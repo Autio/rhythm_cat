@@ -4,27 +4,22 @@ using UnityEngine;
 
 public class BeatScroller : MonoBehaviour
 {
-    public float beatTempo;
+    // Moves the gridlines and notes on it downwards 
+    // Designed to sit on the parent object for notes
+
+    public float beatTempo;         // Should match the tempo of the song in bpm
     public bool hasStarted;
-    public GameObject horizontalBar;
     public int noteDirection = 1;
 
-    public GameObject[] horizontalBars;
+    public GameObject[] horizontalBars; // Stores all the horizontal staves to be moved down
 
     // Start is called before the first frame update
     void Start()
     {
         // 120 = two units per second
-        beatTempo = beatTempo / 60f;
-
+        beatTempo = beatTempo / 60f;    // Converts to seconds 
         GameObject startingBar = GameObject.Find("StartingBar");
-        // Create a set of horizontal bars
-        //for(int i = 0; i < 100; i++)
-        //{
-        //    GameObject bar = (GameObject)Instantiate(horizontalBar, new Vector3(startingBar.transform.position.x, startingBar.transform.position.y + i * 22.5f, 0), Quaternion.identity);
-        //    bar.transform.SetParent(GameObject.Find("HorizontalBarGrid").transform);
-        //    //bar.transform.position = new Vector3(bar.transform.parent.localPosition.x - 180, bar.transform.localPosition.y, 0);
-        //}
+
     }
 
     // Update is called once per frame
@@ -32,16 +27,15 @@ public class BeatScroller : MonoBehaviour
     {
         if(!hasStarted)
         {
-/*            if(Input.anyKeyDown)
-            {
-                hasStarted = true;
-            }*/
+            // hasStarted gets set by GameManager
         }
         else
         {
 
+            // Moves the notes
             transform.position -= new Vector3(0, beatTempo * noteDirection * Time.deltaTime, 0);
 
+            
             float increment = .5f;
             // Also scroll the horizontal bars
             foreach(GameObject bar in horizontalBars)
@@ -49,7 +43,7 @@ public class BeatScroller : MonoBehaviour
                 bar.transform.position -= new Vector3(0, beatTempo * noteDirection * Time.deltaTime, 0);
                 if(bar.transform.position.y < -75)
                 {
-                    // Put the bar at the top
+                    // Put a bar back at the top if it's scrolled way down
                     float maxY = 0;
                     foreach(GameObject bar2 in horizontalBars)
                     {
@@ -60,7 +54,6 @@ public class BeatScroller : MonoBehaviour
 
                     }
 
-                    //Debug.Log("MaxY " + maxY);
                     bar.transform.position = new Vector3(0, maxY + increment, 0);
                 }
             }

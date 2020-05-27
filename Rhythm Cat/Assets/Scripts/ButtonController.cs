@@ -42,17 +42,17 @@ public class ButtonController : MonoBehaviour
                 bool noteUnder = false;
                 foreach(GameObject g in notesUnderMe)
                 {
-                try
-                {
-                    if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
+                    try
                     {
-                        noteUnder = true;
+                        if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
+                        {
+                            noteUnder = true;
+                        }
                     }
-                }
-                catch
-                {
-                    Debug.Log("Couldn't find overlap bounds");
-                }
+                    catch
+                    {
+                        Debug.Log("Couldn't find overlap bounds");
+                    }
                 }
                 
                 // Check whether there's a note under
@@ -84,7 +84,7 @@ public class ButtonController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Note")
+        if (other.tag == "Note" || other.tag == "LongNote")
         {
             notePresent = true;
             notesUnderMe.Add(other.gameObject);
@@ -99,7 +99,7 @@ public class ButtonController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.tag == "Note")
+        if (other.tag == "Note" || other.tag == "LongNote")
         {
             notePresent = false;
             notesUnderMe.Remove(other.gameObject);

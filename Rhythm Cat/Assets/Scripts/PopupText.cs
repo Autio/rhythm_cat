@@ -6,15 +6,16 @@ using DG.Tweening;
 
 public class PopupText : MonoBehaviour
 {
+    // How a spawned text for Good, Perfect, Missed hits etc behaves
+
     float speed = 1f;
     float lifeTimer = 1f;
     // Start is called before the first frame update
     void Start()
     {
-        // Make it grow and shrink
+        // Make it grow and shrink using Tweening
         Sequence seq = DOTween.Sequence();
         seq.Append(this.GetComponent<RectTransform>().DOScale(1.7f, .4f));
-
         seq.Append(this.GetComponent<RectTransform>().DOScale(.1f, .9f));
 
 
@@ -23,6 +24,7 @@ public class PopupText : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Set it to self-destruct
         lifeTimer -= Time.deltaTime;
 
         if (lifeTimer < 0 )
@@ -30,6 +32,7 @@ public class PopupText : MonoBehaviour
             Destroy(this.gameObject);
         }
 
+        // Move it up during its lifetime
         transform.Translate(Vector3.up * Time.deltaTime * speed);
     }
 }

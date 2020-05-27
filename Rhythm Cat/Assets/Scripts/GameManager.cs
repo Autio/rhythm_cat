@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
@@ -91,6 +92,8 @@ public class GameManager : MonoBehaviour
     // Cat to show at the end after a succesfull level
     public GameObject endCat;
 
+    public AudioMixer audioMixer;
+    public AudioMixerSnapshot[] snapshots;
 
     public GameObject[] buttonHitParticleEffects;
 
@@ -105,7 +108,8 @@ public class GameManager : MonoBehaviour
         GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[0];
 
         GameObject[] notes = GameObject.FindGameObjectsWithTag("Note");
-        totalNotes = notes.Length; // Count all notes
+        GameObject[] longNotes = GameObject.FindGameObjectsWithTag("LongNote");
+        totalNotes = notes.Length + longNotes.Length; // Count all notes
         Debug.Log("Total notes in this level: " + totalNotes.ToString());
 
         // Make sure that only the canvases and views we want to be active at the start
@@ -139,7 +143,11 @@ public class GameManager : MonoBehaviour
             }
 
             Time.timeScale = gameSpeeds[currentGameSpeedIndex];
+            // Change only tempo but try to maintain 
             GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[currentGameSpeedIndex];
+            snapshots[currentGameSpeedIndex].TransitionTo(.1f);
+            //audioMixer.SetFloat("MasterPitchShift", 1f / gameSpeeds[currentGameSpeedIndex]);
+
 
         }
 

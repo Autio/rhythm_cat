@@ -5,6 +5,7 @@ using DG.Tweening;
 
 public class Cat : MonoBehaviour
 {
+    // Governs what an animated cat should do
     public GameObject mouth;
     public GameObject movingMouth;
 

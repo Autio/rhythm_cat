@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class GridCreator 
 {
+    // Can't be used with web builds
+    // Helper utility to build hundreds of horizontal bars in the editor
+
     //public GameObject horizontalBar;
     //GameObject startingBar;
 
