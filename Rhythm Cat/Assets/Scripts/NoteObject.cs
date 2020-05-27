@@ -76,11 +76,11 @@ public class NoteObject : MonoBehaviour
                         // Hit quality on the basis of the distance from 0
                         // IMPORTANT: Keep the ideal hit point at y = 0
                         
-                        if (Mathf.Abs(yPosition) > 0.25f)
+                        if (Mathf.Abs(yPosition) > 0.35f)
                         {
                             GameManager.instance.NormalHit();
                         }
-                        else if (Mathf.Abs(yPosition) > .05f)
+                        else if (Mathf.Abs(yPosition) > .12f)
                         {
                             GameManager.instance.GoodHit();
 
@@ -89,7 +89,7 @@ public class NoteObject : MonoBehaviour
                             //g.GetComponent<Canvas>().worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
                         }
-                        else
+                        else if (Mathf.Abs(yPosition) <= .12f)
                         {
                             GameManager.instance.PerfectHit();
                             Instantiate(perfectText, new Vector3(transform.position.x, 4.85f, 0), perfectText.transform.rotation);

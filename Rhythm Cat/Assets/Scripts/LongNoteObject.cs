@@ -8,18 +8,7 @@ public class LongNoteObject : MonoBehaviour
     public bool canBePressed;
     public bool hit = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // Check when the long note starter collider is on top of the button and when it leaves
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Activator")
