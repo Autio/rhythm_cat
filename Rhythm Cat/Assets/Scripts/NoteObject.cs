@@ -85,14 +85,14 @@ public class NoteObject : MonoBehaviour
                             GameManager.instance.GoodHit();
 
                             // Instantiate the relevant text above this note at the right position
-                            GameObject g = Instantiate(goodText, new Vector3(transform.position.x, 4.85f, 0), goodText.transform.rotation) as GameObject;
+                            GameObject g = Instantiate(goodText, new Vector3(transform.position.x, 2.55f, 0), goodText.transform.rotation) as GameObject;
                             //g.GetComponent<Canvas>().worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
                         }
                         else if (Mathf.Abs(yPosition) <= .12f)
                         {
                             GameManager.instance.PerfectHit();
-                            Instantiate(perfectText, new Vector3(transform.position.x, 4.85f, 0), perfectText.transform.rotation);
+                            Instantiate(perfectText, new Vector3(transform.position.x, 2.55f, 0), perfectText.transform.rotation);
 
                         }
                         hit = true;
@@ -148,7 +148,7 @@ public class NoteObject : MonoBehaviour
                 GameManager.instance.NoteMissed();
 
                 // Display the missed text above this button
-                GameObject g = Instantiate(missedText, new Vector3(transform.position.x, 4.85f, 0), missedText.transform.rotation) as GameObject;
+                GameObject g = Instantiate(missedText, new Vector3(transform.position.x, 2.55f, 0), missedText.transform.rotation) as GameObject;
 
             }
         }
