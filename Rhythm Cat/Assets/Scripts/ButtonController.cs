@@ -18,11 +18,15 @@ public class ButtonController : MonoBehaviour
     public KeyCode keyToPress;
     public GameObject catMouth;
 
-    GameManager gm; 
+    GameManager gm;
+
+    public List<GameObject> notesUnderMe;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        notesUnderMe = new List<GameObject>();
         sr = GetComponent<SpriteRenderer>();
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
@@ -35,14 +39,31 @@ public class ButtonController : MonoBehaviour
             {
                 MouthOpen();
                 sr.sprite = pressedImage;
+                bool noteUnder = false;
+                foreach(GameObject g in notesUnderMe)
+                {
+                try
+                {
+                    if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
+                    {
+                        noteUnder = true;
+                    }
+                }
+                catch
+                {
+                    Debug.Log("Couldn't find overlap bounds");
+                }
+                }
+                
                 // Check whether there's a note under
-                if (!notePresent && songStarted)
+                if (!noteUnder && songStarted)
                 {
                     // Tried to hit a note but missed
                     GameObject.Find("GameManager").GetComponent<GameManager>().NoteMissed();
-                }
 
             }
+
+        }
 
             if (Input.GetKeyUp(keyToPress))
             {
@@ -66,9 +87,11 @@ public class ButtonController : MonoBehaviour
         if (other.tag == "Note")
         {
             notePresent = true;
+            notesUnderMe.Add(other.gameObject);
+
         }
 
-        if(other.tag == "Start")
+        if (other.tag == "Start")
         {
             songStarted = true;
         }
@@ -79,7 +102,8 @@ public class ButtonController : MonoBehaviour
         if (other.tag == "Note")
         {
             notePresent = false;
-            
+            notesUnderMe.Remove(other.gameObject);
+
         }
     }
 

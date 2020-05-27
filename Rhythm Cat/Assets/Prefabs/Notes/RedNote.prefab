@@ -104,6 +104,8 @@ MonoBehaviour:
     type: 3}
   goodText: {fileID: 6106390784016551882, guid: c101e836efa65d448affc49dacdc8bb3,
     type: 3}
+  missedText: {fileID: 6106390784016551882, guid: 2df3961c1af413547b84c3256c9d0021,
+    type: 3}
 --- !u!58 &8488516693865998080
 CircleCollider2D:
   m_ObjectHideFlags: 0

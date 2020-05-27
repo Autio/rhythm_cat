@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8488516693865998080}
   m_Layer: 9
   m_Name: YellowNote
-  m_TagString: Untagged
+  m_TagString: Note
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,11 +97,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canBePressed: 0
   hit: 0
+  isLong: 0
   keyToPress: 100
   thisNoteType: 2
   perfectText: {fileID: 2253469444413077023, guid: d3f446ff754f8734ab5f325dac9c430a,
     type: 3}
   goodText: {fileID: 6106390784016551882, guid: c101e836efa65d448affc49dacdc8bb3,
+    type: 3}
+  missedText: {fileID: 6106390784016551882, guid: 2df3961c1af413547b84c3256c9d0021,
     type: 3}
 --- !u!58 &8488516693865998080
 CircleCollider2D:

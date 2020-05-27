@@ -5,27 +5,32 @@ using UnityEngine;
 
 public class NoteObject : MonoBehaviour
 {
+    // Behaviour for the notes coming down the track
+    GameManager gm;
+
     public bool canBePressed;
     public bool hit = false;
     public bool isLong = false;
-
-    GameManager gm;
-
+       
     public KeyCode keyToPress;
-    public enum noteTypes { blue, red, yellow, white };
+    public enum noteTypes { blue, red, yellow, white }; // All possible note types. Change to black, gray, yellow, white?
     public noteTypes thisNoteType = noteTypes.blue;
+
     float longNoteScoreTicker = .3f; // every tick add score for held note
 
     GameObject longNoteStartTrigger;
 
     public GameObject perfectText;
     public GameObject goodText;
+    public GameObject missedText;
 
     // Start is called before the first frame update
     void Start()
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 
+        // If the note is long, there's a separate trigger in a child object
+        // This governs the window of opportunity to start hitting the note
         if (isLong)
         {
             longNoteStartTrigger = this.transform.Find("StartTrigger").gameObject;
@@ -39,10 +44,12 @@ public class NoteObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // If the game level is active
         if (!gm.levelEnd)
         {
             if (Input.GetKeyDown(keyToPress))
             {
+                // Bail out since the note has already been hit
                 if (hit)
                 {
                     return;
@@ -65,8 +72,10 @@ public class NoteObject : MonoBehaviour
                             }
                         }
 
-
+                        // Behaviour for regular notes
                         // Hit quality on the basis of the distance from 0
+                        // IMPORTANT: Keep the ideal hit point at y = 0
+                        
                         if (Mathf.Abs(yPosition) > 0.25f)
                         {
                             GameManager.instance.NormalHit();
@@ -74,14 +83,16 @@ public class NoteObject : MonoBehaviour
                         else if (Mathf.Abs(yPosition) > .05f)
                         {
                             GameManager.instance.GoodHit();
+
                             // Instantiate the relevant text above this note at the right position
-                            Instantiate(goodText, new Vector3(transform.position.x, 6.85f, 0), goodText.transform.rotation);
+                            GameObject g = Instantiate(goodText, new Vector3(transform.position.x, 4.85f, 0), goodText.transform.rotation) as GameObject;
+                            //g.GetComponent<Canvas>().worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
                         }
                         else
                         {
                             GameManager.instance.PerfectHit();
-                            Instantiate(perfectText, new Vector3(transform.position.x, 6.85f, 0), perfectText.transform.rotation);
+                            Instantiate(perfectText, new Vector3(transform.position.x, 4.85f, 0), perfectText.transform.rotation);
 
                         }
                         hit = true;
@@ -135,6 +146,10 @@ public class NoteObject : MonoBehaviour
             if (!hit)
             {
                 GameManager.instance.NoteMissed();
+
+                // Display the missed text above this button
+                GameObject g = Instantiate(missedText, new Vector3(transform.position.x, 4.85f, 0), missedText.transform.rotation) as GameObject;
+
             }
         }
     }

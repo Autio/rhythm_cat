@@ -61,7 +61,8 @@ public class GameManager : MonoBehaviour
     public int scorePerGoodHit = 100;
     public int scorePerPerfectHit = 120;
     public int sequence = 0;            // Sequence of correctly hit notes
-    public int multiplier = 1;
+
+    public int multiplier = 1;          // Current multiplier
     // How many hits do you need to get in sequence before the multiplier is bumped up
     public int[] multiplierThresholds = { 4, 8, 16, 32, 64, 128, 256, 512 };
 
@@ -110,6 +111,9 @@ public class GameManager : MonoBehaviour
         endCat.SetActive(false);
         
     }
+
+    // TODO: Level switching
+    // TODO: Level editor
 
     /// <summary>
     /// MAIN GAME LOOP
@@ -228,6 +232,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Pathways for the different types of note hits: Normal, Good, Perfect, Long
+    /// </summary>
+
     public void NormalHit()
     {
        currentScore += scorePerNormalHit * multiplier;
@@ -274,10 +282,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Returns true if the current sequence is longer than the currently valid threshold
+    bool CheckMultiplier()
+    {
+        if (sequence > multiplierThresholds[multiplier - 1])
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// HEALTH MANAGEMENT
+    /// </summary>
     void HealthDown()
     {
         health -= 4; // FIXME: hard-coded health decrement
         UpdateHealthBar();
+
+        // Check for the end of the game due to health dropping to 0 or below
         if (health <= 0)
         {
             // Level lost
@@ -297,22 +320,13 @@ public class GameManager : MonoBehaviour
         
     }
 
-    bool CheckMultiplier()
-    {
-        if(sequence > multiplierThresholds[multiplier - 1])
-        {
-            return true;
-        }
-        return false;
-    }
-
     void UpdateHealthBar()
     {
         float ratio = (float)health / (float)maxHealth;
         healthBar.GetComponent<Slider>().value = ratio;
 
         // Check if the health bar color should change
-        if(ratio < .3f)
+        if(ratio < .3f) 
         {
             fill.GetComponent<Image>().color = badHealthColor;
             handle.GetComponent<Image>().color = badHealthColor;
@@ -323,29 +337,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void ActivateNoteHitParticles(NoteObject.noteTypes n)
-    {
-        if(n == NoteObject.noteTypes.blue)
-        {
-            buttonHitParticleEffects[0].GetComponent<ParticleSystem>().Play();
-        }
-        if (n == NoteObject.noteTypes.red)
-        {
-            buttonHitParticleEffects[1].GetComponent<ParticleSystem>().Play();
-
-        }
-        if (n == NoteObject.noteTypes.yellow)
-        {
-            buttonHitParticleEffects[2].GetComponent<ParticleSystem>().Play();
-
-        }
-        if (n == NoteObject.noteTypes.white)
-        {
-            buttonHitParticleEffects[3].GetComponent<ParticleSystem>().Play();
-
-        }
-    }
-
+    /// <summary>
+    /// LEVEL ENDINGS
+    /// </summary>
+    
+    // When the player gets to the end of the track
     public void EndLevel()
     {
         music.Stop();
@@ -359,77 +355,47 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(CurtainCall(classification));
 
+        // Hide the visible scene and activate the end screen
+        // FIXME: Smarter way to handle activations and deactivations?
         gameScene.SetActive(false);
         startCanvas.SetActive(false);
         endCanvas.SetActive(true);
         tryagainText.gameObject.SetActive(false);
 
-
-        // Applause if it wasn't awful
+        // Play the applause sound effect if it wasn't awful
         if (classification != "MeOWWWW!")
         {
             GameObject.Find("SoundEffect").GetComponent<AudioSource>().Play();
         }
-
+        else
+        {
+            // TODO: Play another effect if the song WAS awful
+        }
+        
+        // Update the texts on the end screen
         performanceText.GetComponent<TMP_Text>().text = classification;
         finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
         notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
 
     }
 
+    // What happens if the player runs out of health
     public void LoseLevel()
     {
 
-        // Slow down the music
         ending = true;
-
         levelEnd = true;
         StartCoroutine(LevelLoseCoroutine());
         transition = true;
 
-
-
     }
 
-    private IEnumerator DrawCurtain()
-    {
-        yield return new WaitForSeconds(1.2f);
-        // Start putting the lights on
-        GameObject.Find("LightingManager").GetComponent<LightingManager>().LightsOn();
-
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            yield return new WaitForSeconds(.2f);
-            buttons[i].GetComponent<ButtonController>().PulseButton();
-           
-        }
-        liveGameCanvas.SetActive(true);
-        transition = false;
-
-    }
-
-    private IEnumerator CurtainCall(string classification)
-    {
-
-        yield return new WaitForSeconds(1.5f);
-        GameObject.Find("TopHatParticles").GetComponent<ParticleSystem>().Play();
-        yield return new WaitForSeconds(2.5f);
-        transition = false;
-
-        // Show happy cat if not clawful
-        if (classification != "MeOWWWW!")
-        {
-            endCat.SetActive(true);
-        }
-
-    }
 
     private IEnumerator LevelLoseCoroutine()
     {
 
-
         yield return new WaitForSeconds(2.2f);
-            
+
         music.Stop();
 
         // Start moving the curtains to the right
@@ -454,6 +420,51 @@ public class GameManager : MonoBehaviour
 
     }
 
+    // Coroutine to open the curtain
+    private IEnumerator DrawCurtain()
+    {
+        yield return new WaitForSeconds(1.2f);
+
+        // Start putting the lights on
+        GameObject.Find("LightingManager").GetComponent<LightingManager>().LightsOn();
+
+        // Pulse the player buttons
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            yield return new WaitForSeconds(.2f);
+            buttons[i].GetComponent<ButtonController>().PulseButton();
+           
+        }
+
+        // After all of the above is done, activate the live game canvas
+        liveGameCanvas.SetActive(true);
+        // Finish the transition, allow players to interact again
+        transition = false;
+
+    }
+
+
+    // Coroutine to close the curtain at the end of a level
+    private IEnumerator CurtainCall(string classification)
+    {
+
+        yield return new WaitForSeconds(1.5f);
+
+        // Show happy cat and throw top hats if not clawful
+        if (classification != "MeOWWWW!")
+        {
+            endCat.SetActive(true);
+            GameObject.Find("TopHatParticles").GetComponent<ParticleSystem>().Play();
+
+        }
+
+        yield return new WaitForSeconds(2.5f);
+        transition = false;
+
+    }
+
+
+    // Classifying the player's achievement on the basis of the proportion of notes hit
     string Classification(float percentage)
     {
         if (percentage > .9)
@@ -476,6 +487,8 @@ public class GameManager : MonoBehaviour
 
         return "MeOWWWW!";
     }
+
+    // Get the cats to send a musical note from their mouths
     public void SendCatNoteParticle(NoteObject.noteTypes n)
     {
         if (n == NoteObject.noteTypes.blue)
@@ -485,17 +498,35 @@ public class GameManager : MonoBehaviour
         if (n == NoteObject.noteTypes.red)
         {
             cats[1].GetComponent<Cat>().PlayNote();
-
         }
         if (n == NoteObject.noteTypes.yellow)
         {
             cats[2].GetComponent<Cat>().PlayNote();
-
         }
         if (n == NoteObject.noteTypes.white)
         {
             cats[3].GetComponent<Cat>().PlayNote();
+        }
+    }
 
+    // Get the buttons at the bottom to emit a colourful effect when you hit a note
+    public void ActivateNoteHitParticles(NoteObject.noteTypes n)
+    {
+        if (n == NoteObject.noteTypes.blue)
+        {
+            buttonHitParticleEffects[0].GetComponent<ParticleSystem>().Play();
+        }
+        if (n == NoteObject.noteTypes.red)
+        {
+            buttonHitParticleEffects[1].GetComponent<ParticleSystem>().Play();
+        }
+        if (n == NoteObject.noteTypes.yellow)
+        {
+            buttonHitParticleEffects[2].GetComponent<ParticleSystem>().Play();
+        }
+        if (n == NoteObject.noteTypes.white)
+        {
+            buttonHitParticleEffects[3].GetComponent<ParticleSystem>().Play();
         }
     }
 
