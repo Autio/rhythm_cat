@@ -78,6 +78,9 @@ public class GameManager : MonoBehaviour
     int goodHits;
     int perfectHits;
 
+    // AUDIO
+    public AudioClip[] songsBySpeed;
+
     /// <summary>
     /// Text objects
     /// </summary>
@@ -155,10 +158,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game speed set to " + gameSpeeds[currentGameSpeedIndex].ToString());
 
         Time.timeScale = gameSpeeds[currentGameSpeedIndex];
+        GameObject.Find("LevelSong").GetComponent<AudioSource>().clip = songsBySpeed[currentGameSpeedIndex];
+
+        // DOESN'T WORK IN WEBGL, SO WE'LL JUST USE DIFFERENT AUDIO FILES
         // Change only tempo but try to maintain 
-        GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[currentGameSpeedIndex];
+//        GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[currentGameSpeedIndex];
         // Set the appropriate mixer snapshot so that 
-        snapshots[currentGameSpeedIndex].TransitionTo(.1f);
+ //       snapshots[currentGameSpeedIndex].TransitionTo(.1f);
 
         try
         {
@@ -176,10 +182,10 @@ public class GameManager : MonoBehaviour
     {
         
         // Debug key which makes the game run faster
-        if(Input.GetKeyDown(KeyCode.F1))
-        {
-            CycleSpeed();
-        }
+        //if(Input.GetKeyDown(KeyCode.F1))
+        //{
+        //    CycleSpeed();
+        //}
 
         // Reverses the song direction 
         if (Input.GetKeyDown(KeyCode.F2))

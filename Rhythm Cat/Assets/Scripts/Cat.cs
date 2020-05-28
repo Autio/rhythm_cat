@@ -63,14 +63,14 @@ public class Cat : MonoBehaviour
         {
             growing = false;
         }
-        if(Input.GetKeyDown(KeyCode.K))
-        {
-            LongNoteAnim();
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            RegularAnim();
-        }
+        //if(Input.GetKeyDown(KeyCode.K))
+        //{
+        //    LongNoteAnim();
+        //}
+        //if (Input.GetKeyDown(KeyCode.L))
+        //{
+        //    RegularAnim();
+        //}
     }
 
     public void PlayNote()
