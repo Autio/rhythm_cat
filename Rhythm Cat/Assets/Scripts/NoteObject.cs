@@ -24,10 +24,13 @@ public class NoteObject : MonoBehaviour
     public GameObject goodText;
     public GameObject missedText;
 
+    float buttonY;
+
     // Start is called before the first frame update
     void Start()
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        buttonY = GameManager.buttonY; 
 
         // If the note is long, there's a separate trigger in a child object
         // This governs the window of opportunity to start hitting the note
@@ -75,12 +78,12 @@ public class NoteObject : MonoBehaviour
                         // Behaviour for regular notes
                         // Hit quality on the basis of the distance from 0
                         // IMPORTANT: Keep the ideal hit point at y = 0
-                        
-                        if (Mathf.Abs(yPosition) > 0.35f)
+
+                        if (yPosition > buttonY + 0.35f || yPosition < buttonY - 0.35f)
                         {
                             GameManager.instance.NormalHit();
                         }
-                        else if (Mathf.Abs(yPosition) > .12f)
+                        else if (yPosition > buttonY + 0.12f || yPosition < buttonY - 0.12f)
                         {
                             GameManager.instance.GoodHit();
 
@@ -89,7 +92,7 @@ public class NoteObject : MonoBehaviour
                             //g.GetComponent<Canvas>().worldCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
                         }
-                        else if (Mathf.Abs(yPosition) <= .12f)
+                        else 
                         {
                             GameManager.instance.PerfectHit();
                             Instantiate(perfectText, new Vector3(transform.position.x, 2.55f, 0), perfectText.transform.rotation);
@@ -101,6 +104,10 @@ public class NoteObject : MonoBehaviour
                         if (!isLong)
                         {
                             GetComponent<SpriteRenderer>().enabled = false;
+                        } else
+                        {
+                            // Make the cat grow  FIXME: Hacky
+                            gm.cats[3].GetComponent<Cat>().LongNoteAnim();
                         }
                         // play the effect on the button
                         GameManager.instance.ActivateNoteHitParticles(thisNoteType);
@@ -124,6 +131,13 @@ public class NoteObject : MonoBehaviour
                         longNoteScoreTicker = 0.3f;
                     }
                 }
+            }
+
+            if(Input.GetKeyUp(keyToPress) && isLong)
+            {
+                
+                gm.cats[3].GetComponent<Cat>().RegularAnim();
+
             }
         }
     }
@@ -155,10 +169,12 @@ public class NoteObject : MonoBehaviour
                     GameObject g = Instantiate(missedText, new Vector3(transform.position.x, 2.55f, 0), missedText.transform.rotation) as GameObject;
 
                 }
-                else
-                {
-                    Debug.Log("Long note exited");
-                }
+             
+
+            }
+            else
+            {
+                Debug.Log("Long note exited");
 
             }
         }

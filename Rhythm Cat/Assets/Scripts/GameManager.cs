@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
     // Beat scroller handles the motion of the music grid and notes on it
     public BeatScroller bs;
 
+    public static float buttonY;    // Y position of the buttons
+
     // Health and health-bar
     public int health = 40;         // Hit points at any given time
     private int maxHealth;          // Set to health at the start and used to compare how full the health bar should be
@@ -73,6 +75,9 @@ public class GameManager : MonoBehaviour
     int notesMissed;
     int totalNotes; // How many notes on the scene
 
+    int goodHits;
+    int perfectHits;
+
     /// <summary>
     /// Text objects
     /// </summary>
@@ -91,6 +96,8 @@ public class GameManager : MonoBehaviour
     public GameObject finalScoreText;
     public GameObject notesHitText;
     public GameObject tryagainText;
+    public GameObject goodHitsText;
+    public GameObject perfectHitsText;
     
     // Cat to show at the end after a succesfull level
     public GameObject endCat;
@@ -105,6 +112,8 @@ public class GameManager : MonoBehaviour
     {
         instance = this;    // Ensures there's only one game manager only
         maxHealth = health;
+
+        buttonY = buttons[0].transform.position.y;
 
         // Set basic speed and pitch
         Time.timeScale = gameSpeeds[0];
@@ -284,6 +293,7 @@ public class GameManager : MonoBehaviour
         currentScore += scorePerGoodHit * multiplier;
         Debug.Log("Good hit!");
         NoteHit();
+        goodHits++;
 
     }
 
@@ -292,6 +302,7 @@ public class GameManager : MonoBehaviour
         currentScore += scorePerPerfectHit * multiplier;
         Debug.Log("Perfect hit!");
         NoteHit();
+        perfectHits++;
 
     }
 
@@ -412,6 +423,9 @@ public class GameManager : MonoBehaviour
         performanceText.GetComponent<TMP_Text>().text = classification;
         finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
         notesHitText.GetComponent<TMP_Text>().text = "Notes hit: " + notesHit.ToString() + " out of " + totalNotes.ToString();
+        goodHitsText.GetComponent<TMP_Text>().text = "Good hits: " + goodHits.ToString();
+        perfectHitsText.GetComponent<TMP_Text>().text = "Purrfect hits: " + perfectHits.ToString();
+
 
     }
 
@@ -450,6 +464,8 @@ public class GameManager : MonoBehaviour
         finalScoreText.GetComponent<TMP_Text>().text = "Score: " + currentScore.ToString();
         // Don't show the notes hit when you fail a level
         notesHitText.GetComponent<TMP_Text>().text = "";
+        goodHitsText.GetComponent<TMP_Text>().text = "Good hits: " + goodHits.ToString();
+        perfectHitsText.GetComponent<TMP_Text>().text = "Purrfect hits: " + perfectHits.ToString();
 
         yield return new WaitForSeconds(2.5f);
         transition = false;
