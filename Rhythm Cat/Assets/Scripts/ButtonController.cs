@@ -33,45 +33,69 @@ public class ButtonController : MonoBehaviour
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
+    public void TouchButton()
+    {
+
+        PressButton();
+
+        // Cycle through notes and trigger the relevant one also
+        foreach(GameObject note in gm.notes)
+        {
+            if(note.GetComponent<NoteObject>().keyToPress == this.keyToPress)
+            {
+                note.GetComponent<NoteObject>().HitNote();
+            }
+        }
+    }
+
+    public void PressButton()
+    {
+        MouthOpen();
+        sr.sprite = pressedImage;
+        bool noteUnder = false;
+        foreach (GameObject g in notesUnderMe)
+        {
+            try
+            {
+                if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
+                {
+                    noteUnder = true;
+                }
+            }
+            catch
+            {
+                Debug.Log("Couldn't find overlap bounds");
+            }
+        }
+
+        // Check whether there's a note under
+        if (!noteUnder && songStarted && !longNote && allowMisses)
+        {
+            // Tried to hit a note but missed
+            GameObject.Find("GameManager").GetComponent<GameManager>().NoteMissed();
+
+        }
+    }
+
+    public void UnpressButton()
+    {
+        MouthClose();
+
+        sr.sprite = defaultImage;
+    }
+
     // Update is called once per frame
     void Update()
     {
 
             if (Input.GetKeyDown(keyToPress))
             {
-                MouthOpen();
-                sr.sprite = pressedImage;
-                bool noteUnder = false;
-                foreach(GameObject g in notesUnderMe)
-                {
-                    try
-                    {
-                        if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
-                        {
-                            noteUnder = true;
-                        }
-                    }
-                    catch
-                    {
-                        Debug.Log("Couldn't find overlap bounds");
-                    }
-                }
-                
-                // Check whether there's a note under
-                if (!noteUnder && songStarted && !longNote && allowMisses)
-                {
-                    // Tried to hit a note but missed
-                    GameObject.Find("GameManager").GetComponent<GameManager>().NoteMissed();
-
+                PressButton();
             }
-
-        }
 
             if (Input.GetKeyUp(keyToPress))
             {
-                MouthClose();
-
-                sr.sprite = defaultImage;
+            UnpressButton();
             }
         
     }

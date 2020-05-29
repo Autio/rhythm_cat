@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviour
     public AudioMixerSnapshot[] snapshots;
 
     public GameObject[] buttonHitParticleEffects;
-
+    public GameObject[] notes;
     // Start is called before the first frame update
     void Start()
     {
@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = gameSpeeds[0];
         GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[0];
 
-        GameObject[] notes = GameObject.FindGameObjectsWithTag("Note");
+        notes = GameObject.FindGameObjectsWithTag("Note");
         GameObject[] longNotes = GameObject.FindGameObjectsWithTag("LongNote");
         totalNotes = notes.Length + longNotes.Length; // Count all notes
         Debug.Log("Total notes in this level: " + totalNotes.ToString());
@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
         // Toggle
         currentGameSpeedIndex++;
  
-        if (currentGameSpeedIndex > gameSpeeds.Length - 1)
+        if (currentGameSpeedIndex > (gameSpeeds.Length - 1))
         {
             currentGameSpeedIndex = 0;
         }
