@@ -105,11 +105,9 @@ public class GameManager : MonoBehaviour
     // Cat to show at the end after a succesfull level
     public GameObject endCat;
 
-    public AudioMixer audioMixer;
-    public AudioMixerSnapshot[] snapshots;
-
     public GameObject[] buttonHitParticleEffects;
     public GameObject[] notes;
+    public GameObject[] longNotes;
     // Start is called before the first frame update
     void Start()
     {
@@ -123,7 +121,7 @@ public class GameManager : MonoBehaviour
         GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[0];
 
         notes = GameObject.FindGameObjectsWithTag("Note");
-        GameObject[] longNotes = GameObject.FindGameObjectsWithTag("LongNote");
+        longNotes = GameObject.FindGameObjectsWithTag("LongNote");
         totalNotes = notes.Length + longNotes.Length; // Count all notes
         Debug.Log("Total notes in this level: " + totalNotes.ToString());
 
@@ -177,6 +175,20 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void ExitStartScreen()
+    {
+        // enable main game and hide the start screen
+        // Start moving the curtains to the right 
+        startScreen = false;
+        Sequence seq = DOTween.Sequence();
+        seq.Append(curtain.GetComponent<Transform>().DOMoveX(-12.64f, 2f));
+        transition = true;
+        StartCoroutine(DrawCurtain());
+        startCanvas.SetActive(false);
+        gameScene.SetActive(true);
+
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -216,17 +228,8 @@ public class GameManager : MonoBehaviour
 
                 // Any key take the player from the start screen
                 if (Input.GetKey(KeyCode.Space))
-                {   
-                    // enable main game and hide the start screen
-                    // Start moving the curtains to the right 
-                    startScreen = false;
-                    Sequence seq = DOTween.Sequence();
-                    seq.Append(curtain.GetComponent<Transform>().DOMoveX(-12.64f, 2f));
-                    transition = true;
-                    StartCoroutine(DrawCurtain());
-                    startCanvas.SetActive(false);
-                    gameScene.SetActive(true);
-
+                {
+                    ExitStartScreen();
                 }
             }
             else if (!startPlaying)

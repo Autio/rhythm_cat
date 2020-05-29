@@ -24,12 +24,20 @@ using UnityEngine.Events;
             _button = GetComponent<Button>();
         }
 
-        private IEnumerator WhilePressed()
+    bool pressed = false;
+    private void Update()
+    {
+        {
+
+        }
+    }
+    private IEnumerator WhilePressed()
         {
             // this looks strange but is okey in a Coroutine
             // as long as you yield somewhere
             while (true)
             {
+            Debug.Log("I'm pressed");
                 whilePointerPressed?.Invoke();
                 yield return null;
             }
@@ -39,7 +47,7 @@ using UnityEngine.Events;
         {
             // ignore if button not interactable
             if (!_button.interactable) return;
-
+        pressed = true;
             // just to be sure kill all current routines
             // (although there should be none)
             StopAllCoroutines();

@@ -46,6 +46,13 @@ public class ButtonController : MonoBehaviour
                 note.GetComponent<NoteObject>().HitNote();
             }
         }
+        foreach (GameObject longNote in gm.longNotes)
+        {
+            if (longNote.GetComponent<NoteObject>().keyToPress == this.keyToPress)
+            {
+                longNote.GetComponent<NoteObject>().HitNote();
+            }
+        }
     }
 
     public void PressButton()
@@ -82,6 +89,23 @@ public class ButtonController : MonoBehaviour
         MouthClose();
 
         sr.sprite = defaultImage;
+
+        // Cycle through notes and trigger the relevant one also
+        foreach (GameObject note in gm.notes)
+        {
+            if (note.GetComponent<NoteObject>().keyToPress == this.keyToPress)
+            {
+                note.GetComponent<NoteObject>().beingPressed = false;
+            }
+        }
+        foreach (GameObject longNote in gm.longNotes)
+        {
+            if (longNote.GetComponent<NoteObject>().keyToPress == this.keyToPress)
+            {
+                longNote.GetComponent<NoteObject>().beingPressed = false;
+            }
+        }
+
     }
 
     // Update is called once per frame

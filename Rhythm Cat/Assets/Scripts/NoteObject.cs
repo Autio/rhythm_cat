@@ -9,6 +9,7 @@ public class NoteObject : MonoBehaviour
     GameManager gm;
 
     public bool canBePressed;
+    public bool beingPressed;
     public bool hit = false;
     public bool isLong = false;
        
@@ -54,6 +55,11 @@ public class NoteObject : MonoBehaviour
             {
                 HitNote();
             }  
+
+            if(beingPressed)
+            {
+                LongNoteHeld();
+            }
         }
     }
 
@@ -68,6 +74,7 @@ public class NoteObject : MonoBehaviour
             {
                 if (canBePressed)
                 {
+                    beingPressed = true;
                     float yPosition = transform.position.y;
                     // If this is a long note, only the start trigger area should count
                     if (isLong && !longNoteStartTrigger.GetComponent<LongNoteObject>().hit)
@@ -123,11 +130,36 @@ public class NoteObject : MonoBehaviour
                 }
             }
 
-        
+            //if (canBePressed)
+            //{
+            //    if (Input.GetKey(keyToPress) && isLong && hit)
+            //    {
+            //        longNoteScoreTicker -= Time.deltaTime;
+            //        if (longNoteScoreTicker < 0)
+            //        {
+            //            // If a long note is in the right collider area keep incrementing score
+            //            Debug.Log("Hitting long note!");
+            //            GameManager.instance.ActivateNoteHitParticles(thisNoteType);
+            //            GameManager.instance.LongNoteHit();
+            //            longNoteScoreTicker = 0.3f;
+            //        }
+            //    }
+            //}
+
+            if (Input.GetKeyUp(keyToPress) && isLong)
+            {
+
+                gm.cats[3].GetComponent<Cat>().RegularAnim();
+
+            }
+    }
+
+    public void LongNoteHeld()
+    {
 
         if (canBePressed)
         {
-            if (Input.GetKey(keyToPress) && isLong && hit)
+            if (isLong && hit)
             {
                 longNoteScoreTicker -= Time.deltaTime;
                 if (longNoteScoreTicker < 0)
@@ -140,15 +172,7 @@ public class NoteObject : MonoBehaviour
                 }
             }
         }
-
-        if (Input.GetKeyUp(keyToPress) && isLong)
-        {
-
-            gm.cats[3].GetComponent<Cat>().RegularAnim();
-
-        }
     }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -163,6 +187,7 @@ public class NoteObject : MonoBehaviour
         if (other.tag == "Activator")
         {
             canBePressed = false;
+            beingPressed = false;
             if (!hit)
             {
                 if (this.transform.tag != "LongNote" && this.transform.tag != "LongNoteTrigger")
