@@ -39,7 +39,7 @@ public class Cat : MonoBehaviour
             if (!growing)
             {
                 Sequence seq = DOTween.Sequence();
-                seq.Append(this.GetComponent<Transform>().DOScale(1.4f, 4f));
+                seq.Append(this.GetComponent<Transform>().DOScale(1.1f, 1.1f));
                 growing = true;
             }
 

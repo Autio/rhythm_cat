@@ -168,7 +168,7 @@ public class GameManager : MonoBehaviour
 
         try
         {
-            speedText.GetComponent<TMP_Text>().text = "<- " + gameSpeeds[currentGameSpeedIndex].ToString() + "X ->";
+            speedText.GetComponent<TMP_Text>().text = "< " + gameSpeeds[currentGameSpeedIndex].ToString() + "x >";
         }
         catch
         {
