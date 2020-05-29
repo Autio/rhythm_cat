@@ -61,6 +61,14 @@ public class NoteObject : MonoBehaviour
             {
                 LongNoteHeld();
             }
+
+
+            if (Input.GetKeyUp(keyToPress) && isLong)
+            {
+
+                gm.cats[3].GetComponent<Cat>().RegularAnim();
+
+            }
         }
     }
 
@@ -152,12 +160,6 @@ public class NoteObject : MonoBehaviour
             //    }
             //}
 
-            if (Input.GetKeyUp(keyToPress) && isLong)
-            {
-
-                gm.cats[3].GetComponent<Cat>().RegularAnim();
-
-            }
     }
 
     public void LongNoteHeld()

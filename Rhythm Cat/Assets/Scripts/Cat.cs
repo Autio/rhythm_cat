@@ -16,18 +16,24 @@ public class Cat : MonoBehaviour
 
     public GameObject noteParticles;
 
+    float growScale = 1.1f;
+
     public void RegularAnim()
     {
-        try
-        {
-            anim.Play("WhiteCatSinging");
-            Sequence seq = DOTween.Sequence();
-            seq.Append(this.GetComponent<Transform>().DOScale(1f, 1.3f));
-            growing = false;
-        }
-        catch
-        {
 
+        if (transform.localScale.x == growScale)
+        {
+            try
+            {
+                anim.Play("WhiteCatSinging");
+                Sequence seq = DOTween.Sequence();
+                seq.Append(this.GetComponent<Transform>().DOScale(1f, 1.3f));
+                growing = false;
+            }
+            catch
+            {
+
+            }
         }
     }
     public void LongNoteAnim()
@@ -40,7 +46,7 @@ public class Cat : MonoBehaviour
             if (!growing)
             {
                 Sequence seq = DOTween.Sequence();
-                seq.Append(this.GetComponent<Transform>().DOScale(1.1f, 1.1f));
+                seq.Append(this.GetComponent<Transform>().DOScale(growScale, 1.1f));
                 growing = true;
             }
 
