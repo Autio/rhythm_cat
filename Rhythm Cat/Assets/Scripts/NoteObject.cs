@@ -94,11 +94,11 @@ public class NoteObject : MonoBehaviour
                 // Hit quality on the basis of the distance from 0
                 // IMPORTANT: Keep the ideal hit point at y = 0
 
-                if (yPosition < (buttonY - 0.34f) || yPosition > (buttonY + 0.34f))
+                if (yPosition < (buttonY - 0.37f) || yPosition > (buttonY + 0.37f))
                     {
                         GameManager.instance.NormalHit();
                     }
-                    else if (yPosition < (buttonY - 0.13f) || yPosition > (buttonY + 0.13f))
+                    else if (yPosition < (buttonY - 0.17f) || yPosition > (buttonY + 0.17f))
                     {
                         GameManager.instance.GoodHit();
 
