@@ -115,6 +115,7 @@ public class GameManager : MonoBehaviour
         maxHealth = health;
 
         buttonY = buttons[0].transform.position.y;
+        Debug.Log(buttonY);
 
         // Set basic speed and pitch
         Time.timeScale = gameSpeeds[0];

@@ -9,7 +9,7 @@ public class Cat : MonoBehaviour
     public GameObject mouth;
     public GameObject movingMouth;
     public Animator anim;
-    private bool growing = false;
+    public bool growing = false;
 
     public float duration = .3f;
     public float scaleBoost = 1.5f;
@@ -22,7 +22,7 @@ public class Cat : MonoBehaviour
         {
             anim.Play("WhiteCatSinging");
             Sequence seq = DOTween.Sequence();
-            seq.Append(this.GetComponent<Transform>().DOScale(1f, 1.5f));
+            seq.Append(this.GetComponent<Transform>().DOScale(1f, 1.3f));
             growing = false;
         }
         catch
@@ -32,6 +32,7 @@ public class Cat : MonoBehaviour
     }
     public void LongNoteAnim()
     {
+        // Should only fire once
         try
         {
             anim.Play("WhiteCatHoldNote");

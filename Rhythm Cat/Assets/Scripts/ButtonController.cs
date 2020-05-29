@@ -106,6 +106,8 @@ public class ButtonController : MonoBehaviour
             }
         }
 
+        gm.cats[3].GetComponent<Cat>().RegularAnim();
+
     }
 
     // Update is called once per frame

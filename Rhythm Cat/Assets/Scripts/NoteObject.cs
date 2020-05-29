@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
 using UnityEngine;
@@ -65,39 +66,39 @@ public class NoteObject : MonoBehaviour
 
     public void HitNote()
     {
-            // Bail out since the note has already been hit
-            if (hit)
+        // Bail out since the note has already been hit
+        if (hit)
+        {
+            return;
+        }
+        else
+        {
+            if (canBePressed)
             {
-                return;
-            }
-            else
-            {
-                if (canBePressed)
+                beingPressed = true;
+                float yPosition = transform.position.y;
+                // If this is a long note, only the start trigger area should count
+                if (isLong && !longNoteStartTrigger.GetComponent<LongNoteObject>().hit)
                 {
-                    beingPressed = true;
-                    float yPosition = transform.position.y;
-                    // If this is a long note, only the start trigger area should count
-                    if (isLong && !longNoteStartTrigger.GetComponent<LongNoteObject>().hit)
+                    yPosition = longNoteStartTrigger.transform.position.y;
+                }
+                if (isLong)
+                {
+                    if (longNoteStartTrigger.GetComponent<LongNoteObject>().canBePressed == false)
                     {
-                        yPosition = longNoteStartTrigger.transform.position.y;
+                        return;
                     }
-                    if (isLong)
-                    {
-                        if (longNoteStartTrigger.GetComponent<LongNoteObject>().canBePressed == false)
-                        {
-                            return;
-                        }
-                    }
+                }
 
-                    // Behaviour for regular notes
-                    // Hit quality on the basis of the distance from 0
-                    // IMPORTANT: Keep the ideal hit point at y = 0
+                // Behaviour for regular notes
+                // Hit quality on the basis of the distance from 0
+                // IMPORTANT: Keep the ideal hit point at y = 0
 
-                    if (yPosition > buttonY + 0.35f || yPosition < buttonY - 0.35f)
+                if (yPosition < (buttonY - 0.34f) || yPosition > (buttonY + 0.34f))
                     {
                         GameManager.instance.NormalHit();
                     }
-                    else if (yPosition > buttonY + 0.12f || yPosition < buttonY - 0.12f)
+                    else if (yPosition < (buttonY - 0.13f) || yPosition > (buttonY + 0.13f))
                     {
                         GameManager.instance.GoodHit();
 
@@ -114,15 +115,20 @@ public class NoteObject : MonoBehaviour
                     }
                     hit = true;
 
-                    // If it's not a long note, make the note invisible
-                    if (!isLong)
+                Debug.Log("Hit position y " + transform.position.y);
+
+                // If it's not a long note, make the note invisible
+                if (!isLong)
+                {
+                    GetComponent<SpriteRenderer>().enabled = false;
+                }
+                else
+                {
+                    // Make the cat grow  FIXME: Hacky
+                    if (!gm.cats[3].GetComponent<Cat>().growing)
                     {
-                        GetComponent<SpriteRenderer>().enabled = false;
-                    }
-                    else
-                    {
-                        // Make the cat grow  FIXME: Hacky
                         gm.cats[3].GetComponent<Cat>().LongNoteAnim();
+                    }
                     }
                     // play the effect on the button
                     GameManager.instance.ActivateNoteHitParticles(thisNoteType);
