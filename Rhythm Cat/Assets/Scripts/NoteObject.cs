@@ -138,8 +138,9 @@ public class NoteObject : MonoBehaviour
                         gm.cats[3].GetComponent<Cat>().LongNoteAnim();
                     }
                     }
-                    // play the effect on the button
-                    GameManager.instance.ActivateNoteHitParticles(thisNoteType);
+                // play the effect on the button
+
+                    GameManager.instance.ActivateNoteHitParticles(thisNoteType, isLong);
                     GameManager.instance.SendCatNoteParticle(thisNoteType);
                 }
             }
@@ -174,7 +175,7 @@ public class NoteObject : MonoBehaviour
                 {
                     // If a long note is in the right collider area keep incrementing score
                     Debug.Log("Hitting long note!");
-                    GameManager.instance.ActivateNoteHitParticles(thisNoteType);
+                    //GameManager.instance.ActivateNoteHitParticles(thisNoteType);
                     GameManager.instance.LongNoteHit();
                     longNoteScoreTicker = 0.3f;
                 }
@@ -206,9 +207,13 @@ public class NoteObject : MonoBehaviour
 
                     // Display the missed text above this button
                     GameObject g = Instantiate(missedText, new Vector3(transform.position.x, 2.55f, 0), missedText.transform.rotation) as GameObject;
+                    g.GetComponent<PopupText>().dir = -1;
+                    g.GetComponent<PopupText>().speed = 2f;
+
+                    GameManager.instance.ActivateNoteMissedParticles(thisNoteType);
 
                 }
-             
+
 
             }
             else

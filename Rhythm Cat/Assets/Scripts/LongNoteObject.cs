@@ -22,7 +22,6 @@ public class LongNoteObject : MonoBehaviour
         if (other.tag == "Activator" && !hit)
         {
             canBePressed = false;
-            //GameManager.instance.NoteMissed();
         }
     }
 }

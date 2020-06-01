@@ -8,8 +8,10 @@ public class PopupText : MonoBehaviour
 {
     // How a spawned text for Good, Perfect, Missed hits etc behaves
 
-    float speed = 1f;
+    public float speed = 1f;
     float lifeTimer = 1f;
+
+    public int dir = 1;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +34,7 @@ public class PopupText : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        // Move it up during its lifetime
-        transform.Translate(Vector3.up * Time.deltaTime * speed);
+        // Move it up/down during its lifetime
+        transform.Translate(Vector3.up * Time.deltaTime * speed * dir);
     }
 }

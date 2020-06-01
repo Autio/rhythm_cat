@@ -106,6 +106,8 @@ public class GameManager : MonoBehaviour
     public GameObject endCat;
 
     public GameObject[] buttonHitParticleEffects;
+    public GameObject[] buttonMissParticleEffects;
+
     public GameObject[] notes;
     public GameObject[] longNotes;
     // Start is called before the first frame update
@@ -133,6 +135,9 @@ public class GameManager : MonoBehaviour
         liveGameCanvas.SetActive(false);
         endCanvas.SetActive(false);
         endCat.SetActive(false);
+
+        // Load level
+        //GetComponent<LevelLoader>().LoadNotes();
         
     }
 
@@ -572,24 +577,75 @@ public class GameManager : MonoBehaviour
     }
 
     // Get the buttons at the bottom to emit a colourful effect when you hit a note
-    public void ActivateNoteHitParticles(NoteObject.noteTypes n)
+    public void ActivateNoteHitParticles(NoteObject.noteTypes n, bool longEffect = false)
     {
+        ParticleSystem ps = null;
+        
         if (n == NoteObject.noteTypes.blue)
         {
-            buttonHitParticleEffects[0].GetComponent<ParticleSystem>().Play();
+            ps = buttonHitParticleEffects[0].GetComponent<ParticleSystem>();
+
         }
         if (n == NoteObject.noteTypes.red)
         {
-            buttonHitParticleEffects[1].GetComponent<ParticleSystem>().Play();
+            ps = buttonHitParticleEffects[1].GetComponent<ParticleSystem>();
         }
         if (n == NoteObject.noteTypes.yellow)
         {
-            buttonHitParticleEffects[2].GetComponent<ParticleSystem>().Play();
+            ps = buttonHitParticleEffects[2].GetComponent<ParticleSystem>();
         }
         if (n == NoteObject.noteTypes.white)
         {
-            buttonHitParticleEffects[3].GetComponent<ParticleSystem>().Play();
+            ps = buttonHitParticleEffects[3].GetComponent<ParticleSystem>();
         }
-    }
 
+        if(ps == null)
+        {
+            return;
+        }
+        ps.Stop(); // Cannot set duration whilst particle system is playing
+        var main = ps.main;
+
+        if (longEffect)
+        {
+            main.duration = 8.0f;
+            main.startLifetime = 8.0f;
+
+        } else
+        {
+            main.duration = .4f;
+            main.startLifetime = .4f;
+        }
+
+        ps.Play();
+    }
+    public void ActivateNoteMissedParticles(NoteObject.noteTypes n, bool longEffect = false)
+    {
+        ParticleSystem ps = null;
+
+        if (n == NoteObject.noteTypes.blue)
+        {
+            ps = buttonMissParticleEffects[0].GetComponent<ParticleSystem>();
+
+        }
+        if (n == NoteObject.noteTypes.red)
+        {
+            ps = buttonMissParticleEffects[1].GetComponent<ParticleSystem>();
+        }
+        if (n == NoteObject.noteTypes.yellow)
+        {
+            ps = buttonMissParticleEffects[2].GetComponent<ParticleSystem>();
+        }
+        if (n == NoteObject.noteTypes.white)
+        {
+            ps = buttonMissParticleEffects[3].GetComponent<ParticleSystem>();
+        }
+
+        if (ps == null)
+        {
+            return;
+        }
+
+        ps.Play();
+    }
 }

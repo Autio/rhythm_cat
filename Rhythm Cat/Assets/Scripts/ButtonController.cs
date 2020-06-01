@@ -24,6 +24,9 @@ public class ButtonController : MonoBehaviour
 
     public List<GameObject> notesUnderMe;
 
+    [SerializeField]
+    private ParticleSystem ps;
+
 
     // Start is called before the first frame update
     void Start()
@@ -107,6 +110,10 @@ public class ButtonController : MonoBehaviour
         }
 
         gm.cats[3].GetComponent<Cat>().RegularAnim();
+        if (longNote)
+        {
+            ps.Stop();
+        }
 
     }
 
@@ -121,7 +128,7 @@ public class ButtonController : MonoBehaviour
 
             if (Input.GetKeyUp(keyToPress))
             {
-            UnpressButton();
+                UnpressButton();
             }
         
     }
@@ -164,6 +171,8 @@ public class ButtonController : MonoBehaviour
         if (other.tag == "LongNote")
         {
             longNote = false;
+            // End visual effect on button
+            ps.Stop();
         }
     }
 
