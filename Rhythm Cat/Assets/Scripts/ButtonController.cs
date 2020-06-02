@@ -64,21 +64,21 @@ public class ButtonController : MonoBehaviour
         MouthOpen();
         sr.sprite = pressedImage;
         bool noteUnder = false;
-        foreach (GameObject g in notesUnderMe)
+        int incrementer = 0;
+        for (int i = 0; i < notesUnderMe.Count; i++)
         {
-       
+            incrementer++;    
             // Check if button collider overlaps with note collider
-            if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
+            if (GetComponent<BoxCollider2D>().bounds.Intersects(notesUnderMe[i].GetComponent<CircleCollider2D>().bounds))
             {
                 noteUnder = true;
-                g.GetComponent<NoteObject>().HitNote();
-
+                notesUnderMe[i].GetComponent<NoteObject>().HitNote();
+                notesUnderMe.Remove(notesUnderMe[i]);
+                Debug.Log(incrementer);
             }
 
 
         }
-
-
 
         // Check whether there's a note under
         if (!noteUnder && songStarted && !longNote && allowMisses)
@@ -96,13 +96,13 @@ public class ButtonController : MonoBehaviour
         sr.sprite = defaultImage;
 
         // Cycle through notes and trigger the relevant one also
-        foreach (GameObject note in gm.notes)
+        /*foreach (GameObject note in gm.notes)
         {
             if (note.GetComponent<NoteObject>().keyToPress == this.keyToPress)
             {
                 note.GetComponent<NoteObject>().beingPressed = false;
             }
-        }
+        }*/
         foreach (GameObject longNote in gm.longNotes)
         {
             if (longNote.GetComponent<NoteObject>().keyToPress == this.keyToPress)

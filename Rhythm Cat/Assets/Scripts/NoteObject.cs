@@ -185,9 +185,12 @@ public class NoteObject : MonoBehaviour
             // Generate the next note from the level map
             LevelLoader.instance.NextNote();
 
-
+            // This note can no longer be pressed
             canBePressed = false;
             beingPressed = false;
+
+            // What happens if the note passes the button but wasn't hit at all 
+            // The note is missed
             if (!hit)
             {
                 if (this.transform.tag != "LongNote" && this.transform.tag != "LongNoteTrigger")
