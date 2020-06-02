@@ -42,13 +42,14 @@ public class ButtonController : MonoBehaviour
         PressButton();
 
         // Cycle through notes and trigger the relevant one also
-        foreach(GameObject note in gm.notes)
-        {
-            if(note.GetComponent<NoteObject>().keyToPress == this.keyToPress)
-            {
-                note.GetComponent<NoteObject>().HitNote();
-            }
-        }
+        //foreach(GameObject note in gm.notes)
+        //{
+        //    if(note.GetComponent<NoteObject>().keyToPress == this.keyToPress)
+        //    {
+        //        note.GetComponent<NoteObject>().HitNote();
+        //        gm.notes.Remove(note);
+        //    }
+        //}
         foreach (GameObject longNote in gm.longNotes)
         {
             if (longNote.GetComponent<NoteObject>().keyToPress == this.keyToPress)
@@ -65,18 +66,19 @@ public class ButtonController : MonoBehaviour
         bool noteUnder = false;
         foreach (GameObject g in notesUnderMe)
         {
-            try
+       
+            // Check if button collider overlaps with note collider
+            if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
             {
-                if (GetComponent<BoxCollider2D>().bounds.Intersects(g.GetComponent<CircleCollider2D>().bounds))
-                {
-                    noteUnder = true;
-                }
+                noteUnder = true;
+                g.GetComponent<NoteObject>().HitNote();
+
             }
-            catch
-            {
-                Debug.Log("Couldn't find overlap bounds");
-            }
+
+
         }
+
+
 
         // Check whether there's a note under
         if (!noteUnder && songStarted && !longNote && allowMisses)
@@ -182,13 +184,7 @@ public class ButtonController : MonoBehaviour
 
         Sequence seq = DOTween.Sequence();
         seq.Append(movingMouth.GetComponent<Transform>().DOScale(scaleBoost, duration / 2));
-        //    seq.Append(movingMouth.GetComponent<Transform>().DOScale(1f, duration / 2));
 
-
-        //Debug.Log("Mouth of cat " + keyToPress.ToString() + " Singing");
-        //Sequence seq = DOTween.Sequence();
-        //seq.Append(catMouth.GetComponent<Transform>().DOScale(12f, 1f));
-        //seq.Append(catMouth.GetComponent<Transform>().DOScale(1f, .2f));
     }
 
     public void MouthClose()

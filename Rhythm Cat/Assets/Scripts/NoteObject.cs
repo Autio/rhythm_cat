@@ -49,9 +49,10 @@ public class NoteObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // If the game level is active
-        if (!gm.levelEnd)
+        // Long notes only. Regular notes currently handled by the ButtonController
+        if (!gm.levelEnd && isLong)
         {
+
             if (Input.GetKeyDown(keyToPress))
             {
                 HitNote();
@@ -123,12 +124,15 @@ public class NoteObject : MonoBehaviour
                     }
                     hit = true;
 
-                Debug.Log("Hit position y " + transform.position.y);
-
-                // If it's not a long note, make the note invisible
+                GameManager.instance.ActivateNoteHitParticles(thisNoteType, isLong);
+                GameManager.instance.SendCatNoteParticle(thisNoteType);
+                // If it's not a long note, move the note up
                 if (!isLong)
                 {
+                    LevelLoader.instance.NextNote();
                     GetComponent<SpriteRenderer>().enabled = false;
+                    Destroy(this.gameObject, 3f);
+
                 }
                 else
                 {
@@ -140,26 +144,9 @@ public class NoteObject : MonoBehaviour
                     }
                 // play the effect on the button
 
-                    GameManager.instance.ActivateNoteHitParticles(thisNoteType, isLong);
-                    GameManager.instance.SendCatNoteParticle(thisNoteType);
                 }
             }
 
-            //if (canBePressed)
-            //{
-            //    if (Input.GetKey(keyToPress) && isLong && hit)
-            //    {
-            //        longNoteScoreTicker -= Time.deltaTime;
-            //        if (longNoteScoreTicker < 0)
-            //        {
-            //            // If a long note is in the right collider area keep incrementing score
-            //            Debug.Log("Hitting long note!");
-            //            GameManager.instance.ActivateNoteHitParticles(thisNoteType);
-            //            GameManager.instance.LongNoteHit();
-            //            longNoteScoreTicker = 0.3f;
-            //        }
-            //    }
-            //}
 
     }
 
@@ -195,6 +182,10 @@ public class NoteObject : MonoBehaviour
     {
         if (other.tag == "Activator")
         {
+            // Generate the next note from the level map
+            LevelLoader.instance.NextNote();
+
+
             canBePressed = false;
             beingPressed = false;
             if (!hit)

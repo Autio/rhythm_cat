@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] buttonHitParticleEffects;
     public GameObject[] buttonMissParticleEffects;
 
-    public GameObject[] notes;
+    public List<GameObject> notes;
     public GameObject[] longNotes;
     // Start is called before the first frame update
     void Start()
@@ -123,9 +123,15 @@ public class GameManager : MonoBehaviour
         Time.timeScale = gameSpeeds[0];
         GameObject.Find("LevelSong").GetComponent<AudioSource>().pitch = gameSpeeds[0];
 
-        notes = GameObject.FindGameObjectsWithTag("Note");
+        notes = new List<GameObject>();
+        GameObject[] noteArray = GameObject.FindGameObjectsWithTag("Note");
+        foreach (GameObject note in noteArray)
+        {
+            notes.Add(note);
+        }
+
         longNotes = GameObject.FindGameObjectsWithTag("LongNote");
-        totalNotes = notes.Length + longNotes.Length; // Count all notes
+        totalNotes = noteArray.Length + longNotes.Length; // Count all notes
         Debug.Log("Total notes in this level: " + totalNotes.ToString());
 
         // Make sure that only the canvases and views we want to be active at the start
@@ -137,7 +143,7 @@ public class GameManager : MonoBehaviour
         endCat.SetActive(false);
 
         // Load level
-        //GetComponent<LevelLoader>().LoadNotes();
+        GetComponent<LevelLoader>().LoadNotes();
         
     }
 

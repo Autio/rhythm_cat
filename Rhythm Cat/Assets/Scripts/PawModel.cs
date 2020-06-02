@@ -6,7 +6,7 @@ public class PawModel
 {
     public float y;
     public float x;
-    NoteObject.noteTypes pawType;
+    public NoteObject.noteTypes pawType;
 
     public PawModel(float x, float y, NoteObject.noteTypes pawType)
     {
