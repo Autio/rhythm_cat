@@ -45,14 +45,23 @@ public class LevelLoader : MonoBehaviour
         levelPaws.OrderBy(w => w.y).ToList();
 
         // Arbitrarily delete the objects after the first x
-        int deleteFrom = 0;
+        int deleteFrom = 13;
         foreach (GameObject note in GameManager.instance.notes)
         {
-            for (int i = deleteFrom; i < levelPaws.Count; i++)
+
+            for (int i = 0; i < levelPaws.Count; i++)
             {
-                if (note.transform.position.x == levelPaws[i].x && note.transform.position.y == levelPaws[i].y)
+                if(i < deleteFrom)
                 {
-                    Destroy(note);
+                    levelPaws.RemoveAt(0);
+
+                }
+                else
+                {
+                    if (note.transform.position.x == levelPaws[i].x && note.transform.position.y == levelPaws[i].y)
+                    {
+                        Destroy(note);
+                    }
                 }
             }
         }
@@ -61,11 +70,11 @@ public class LevelLoader : MonoBehaviour
         Debug.Log(levelPaws);
         Debug.Log(GameManager.instance.notes);
 
-        // Create the first 20 notes
-        for (int i = 0; i < 13; i++)
-        {
-            StartNote();
-        }
+        // Create the first x notes
+       // for (int i = 0; i < 13; i++)
+       // {
+       //     StartNote();
+       // }
 
     }
 
