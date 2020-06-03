@@ -19,13 +19,13 @@ public class BeatScroller : MonoBehaviour
     {
         // 120 = two units per second
         beatTempo = beatTempo / 60f;    // Converts to seconds 
+
         
         // Order by Y coordinate
         gridBars = gridBars.OrderBy(t => t.position.y).ToList();
-        Debug.Log(gridBars[0].transform.position.y);
 
         // Remove unnecessary bars used during level design to save memory during gameplay
-        for (int i = gridBars.Count - 1; i >= 40; i--)
+        for (int i = gridBars.Count - 1; i >= 42; i--)
         {
             Transform bar = gridBars[i];
             gridBars.Remove(bar);
