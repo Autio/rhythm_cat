@@ -45,9 +45,10 @@ public class LevelLoader : MonoBehaviour
         levelPaws.OrderBy(w => w.y).ToList();
 
         // Arbitrarily delete the objects after the first x
+        int deleteFrom = 0;
         foreach (GameObject note in GameManager.instance.notes)
         {
-            for (int i = 19; i < levelPaws.Count; i++)
+            for (int i = deleteFrom; i < levelPaws.Count; i++)
             {
                 if (note.transform.position.x == levelPaws[i].x && note.transform.position.y == levelPaws[i].y)
                 {
@@ -55,8 +56,16 @@ public class LevelLoader : MonoBehaviour
                 }
             }
         }
+
+
         Debug.Log(levelPaws);
         Debug.Log(GameManager.instance.notes);
+
+        // Create the first 20 notes
+        for (int i = 0; i < 13; i++)
+        {
+            StartNote();
+        }
 
     }
 
@@ -64,6 +73,22 @@ public class LevelLoader : MonoBehaviour
     void Update()
     {
         
+    }
+
+    // Note offset is different at the start of the level before the track starts moving
+    public void StartNote()
+    {
+        if (levelPaws.Count > 0)
+        {
+            // Assume the list is ordered by ascending Y
+            PawModel paw = levelPaws[0];
+            int pawTypeIndex = (int)paw.pawType;
+            GameObject newNote = Instantiate(notePrefabs[pawTypeIndex], new Vector2(paw.x, paw.y), Quaternion.identity);
+            newNote.transform.parent = noteParent;
+
+            // Remove that entry from the list
+            levelPaws.RemoveAt(0);
+        }
     }
 
     public void NextNote()
@@ -76,7 +101,6 @@ public class LevelLoader : MonoBehaviour
             // Assume the list is ordered by ascending Y
             PawModel paw = levelPaws[0];
             int pawTypeIndex = (int)paw.pawType;
-            Debug.Log(pawTypeIndex);
             GameObject newNote = Instantiate(notePrefabs[pawTypeIndex], new Vector2(paw.x, noteParent.position.y + paw.y - noteOffsetY), Quaternion.identity);
             newNote.transform.parent = noteParent;
 

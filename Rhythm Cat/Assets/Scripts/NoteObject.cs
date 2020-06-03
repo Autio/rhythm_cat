@@ -40,10 +40,7 @@ public class NoteObject : MonoBehaviour
         {
             longNoteStartTrigger = this.transform.Find("StartTrigger").gameObject;
 
-        } else
-        {
-            Debug.LogError("Could not find the child trigger object of the long note. This is needed to give the window of opportunity to hit the note at its beginning.");
-        }
+        } 
     }
 
     // Update is called once per frame
@@ -217,4 +214,14 @@ public class NoteObject : MonoBehaviour
             }
         }
     }
+
+    void OnDestroy()
+    {
+        // Remove references
+        gm = null;
+
+        perfectText = null;
+        goodText = null;
+        missedText = null;
+}
 }

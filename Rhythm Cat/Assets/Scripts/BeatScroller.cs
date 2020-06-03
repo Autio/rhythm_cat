@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BeatScroller : MonoBehaviour
 {
@@ -11,15 +12,26 @@ public class BeatScroller : MonoBehaviour
     public bool hasStarted;
     public int noteDirection = 1;
 
-    public GameObject[] horizontalBars; // Stores all the horizontal staves to be moved down
+    public List<Transform> gridBars; // List of all of the horizontal bars
 
     // Start is called before the first frame update
     void Start()
     {
         // 120 = two units per second
         beatTempo = beatTempo / 60f;    // Converts to seconds 
-        GameObject startingBar = GameObject.Find("StartingBar");
+        
+        // Order by Y coordinate
+        gridBars = gridBars.OrderBy(t => t.position.y).ToList();
+        Debug.Log(gridBars[0].transform.position.y);
 
+        // Remove unnecessary bars used during level design to save memory during gameplay
+        for (int i = gridBars.Count - 1; i >= 40; i--)
+        {
+            Transform bar = gridBars[i];
+            gridBars.Remove(bar);
+            Destroy(bar.gameObject);
+
+        }
     }
 
     // Update is called once per frame
@@ -38,25 +50,44 @@ public class BeatScroller : MonoBehaviour
             
             float increment = .5f;
             // Also scroll the horizontal bars
-            foreach(GameObject bar in horizontalBars)
+            // Assume an ordered list
+
+
+            // Old approach
+            foreach (Transform bar in gridBars)
             {
-                bar.transform.position -= new Vector3(0, beatTempo * noteDirection * Time.deltaTime, 0);
-                if(bar.transform.position.y < -25)
-                {
-                    // Put a bar back at the top if it's scrolled way down
-                    float maxY = 0;
-                    foreach(GameObject bar2 in horizontalBars)
-                    {
-                        if(bar2.transform.position.y > maxY)
-                        {
-                            maxY = bar2.transform.position.y;
-                        }
+                bar.position -= new Vector3(0, beatTempo * noteDirection * Time.deltaTime, 0);
 
-                    }
-
-                    bar.transform.position = new Vector3(0, maxY + increment, 0);
-                }
             }
+
+            // We cycle through the existing bars as they go off screen
+            // Move the bottom bar up if needed
+            Transform bottomBar = gridBars[0];
+            if (bottomBar.position.y < -2)
+            {
+                bottomBar.position = new Vector3(0, gridBars[gridBars.Count - 1].position.y + increment, 0);
+
+
+                gridBars.Remove(bottomBar);
+                gridBars.Add(bottomBar);
+            }
+            //
+            //  if(bar.position.y < -25)
+            //    {
+            //        // Put a bar back at the top if it's scrolled way down
+            //        float maxY = 0;
+            //        foreach(Transform bar2 in gridBars)
+            //        {
+            //            if(bar2.position.y > maxY)
+            //            {
+            //                maxY = bar2.position.y;
+            //            }
+
+            //        }
+
+            //        bar.position = new Vector3(0, maxY + increment, 0);
+            //    }
+            //}
         }
     }
 }
